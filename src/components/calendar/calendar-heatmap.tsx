@@ -58,19 +58,25 @@ export function CalendarHeatmap({ year, month, episodesByDay, onDayClick }: Cale
             : 0;
           const severity = worstIntensity > 0 ? getSeverityLevel(worstIntensity) : null;
 
+          const today = new Date();
           const isToday =
-            new Date().getFullYear() === year &&
-            new Date().getMonth() === month &&
-            new Date().getDate() === day;
+            today.getFullYear() === year &&
+            today.getMonth() === month &&
+            today.getDate() === day;
+
+          const isFuture = new Date(year, month, day) > today;
 
           return (
             <button
               key={day}
-              onClick={() => onDayClick(dateKey)}
+              onClick={() => !isFuture && onDayClick(dateKey)}
+              disabled={isFuture}
               className={`flex aspect-square items-center justify-center rounded-lg text-xs font-medium transition-colors ${
-                severity
-                  ? `${severityBg[severity]} text-white`
-                  : "bg-bg-surface text-text-secondary hover:bg-bg-elevated"
+                isFuture
+                  ? "cursor-not-allowed bg-bg-surface/40 text-text-secondary/20"
+                  : severity
+                    ? `${severityBg[severity]} text-white`
+                    : "bg-bg-surface text-text-secondary hover:bg-bg-elevated"
               } ${isToday ? "ring-2 ring-accent ring-offset-1 ring-offset-bg-base" : ""}`}
               aria-label={`${dateKey}${hasEpisode ? `, ${dayEpisodes.length} episode(s)` : ""}`}
             >

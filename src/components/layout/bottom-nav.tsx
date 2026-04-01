@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Calendar, Plus, User } from "lucide-react";
+import { LayoutDashboard, Calendar, Plus, BarChart3, User } from "lucide-react";
 
 const tabs = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, isLog: false },
   { href: "/calendar", label: "Calendar", icon: Calendar, isLog: false },
   { href: "/log", label: "Log", icon: Plus, isLog: true },
+  { href: "/analytics", label: "Analytics", icon: BarChart3, isLog: false },
   { href: "/profile", label: "Profile", icon: User, isLog: false },
 ] as const;
 

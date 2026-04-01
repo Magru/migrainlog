@@ -8,9 +8,10 @@ interface MonthSelectorProps {
   month: number;
   onPrev: () => void;
   onNext: () => void;
+  disableNext?: boolean;
 }
 
-export function MonthSelector({ year, month, onPrev, onNext }: MonthSelectorProps) {
+export function MonthSelector({ year, month, onPrev, onNext, disableNext }: MonthSelectorProps) {
   return (
     <div className="flex items-center justify-between">
       <button
@@ -23,7 +24,12 @@ export function MonthSelector({ year, month, onPrev, onNext }: MonthSelectorProp
       <h2 className="font-heading text-lg font-bold">{monthLabel(year, month)}</h2>
       <button
         onClick={onNext}
-        className="flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-bg-surface"
+        disabled={disableNext}
+        className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
+          disableNext
+            ? "text-text-secondary/30 cursor-not-allowed"
+            : "text-text-secondary hover:bg-bg-surface"
+        }`}
         aria-label="Next month"
       >
         <ChevronRight size={20} />

@@ -40,7 +40,10 @@ export default function CalendarPage() {
     if (month === 0) { setYear((y) => y - 1); setMonth(11); }
     else setMonth((m) => m - 1);
   }
+  const isCurrentMonth = year === now.getFullYear() && month === now.getMonth();
+
   function goNext() {
+    if (isCurrentMonth) return;
     if (month === 11) { setYear((y) => y + 1); setMonth(0); }
     else setMonth((m) => m + 1);
   }
@@ -49,7 +52,7 @@ export default function CalendarPage() {
     <PageTransition>
       <div className="space-y-6 py-6">
         <h1 className="font-heading text-[28px] font-extrabold">Calendar</h1>
-        <MonthSelector year={year} month={month} onPrev={goPrev} onNext={goNext} />
+        <MonthSelector year={year} month={month} onPrev={goPrev} onNext={goNext} disableNext={isCurrentMonth} />
         <CalendarHeatmap
           year={year}
           month={month}
