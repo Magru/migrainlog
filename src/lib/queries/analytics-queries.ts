@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { toLocalDateStr } from "@/lib/utils/date-helpers";
 import type { PainLocation, TriggerType } from "@/lib/types/database";
 
-/** Episode frequency within a date range — adapts bucket size to range */
+/** Episode frequency within a date range — one point per day */
 export async function getWeeklyFrequency(from?: string, to?: string) {
   const supabase = await createClient();
   const endDate = to ? new Date(to) : new Date();
@@ -15,39 +15,30 @@ export async function getWeeklyFrequency(from?: string, to?: string) {
     .gte("started_at", startDate.toISOString())
     .lte("started_at", endDate.toISOString());
 
-  const dayMs = 86400000;
-  const totalDays = Math.max(1, Math.round((endDate.getTime() - startDate.getTime()) / dayMs));
-
-  // Always use daily buckets — chart handles scrolling for large ranges
-  const bucketDays = 1;
-  const bucketCount = totalDays;
-
-  // Count episodes per bucket date string for fast lookup
+  // Count episodes per local date string
   const dayCounts: Record<string, number> = {};
   (episodes ?? []).forEach((ep) => {
     const day = toLocalDateStr(ep.started_at);
     dayCounts[day] = (dayCounts[day] ?? 0) + 1;
   });
 
+  // Generate one data point per day from startDate to endDate (inclusive)
+  const startStr = toLocalDateStr(startDate);
+  const endStr = toLocalDateStr(endDate);
   const result: { label: string; count: number }[] = [];
 
-  for (let i = 0; i < bucketCount; i++) {
-    const bucketStart = new Date(startDate.getTime() + i * bucketDays * dayMs);
-    let count = 0;
+  // Walk day by day using local date strings to avoid timezone drift
+  const cursor = new Date(startStr + "T12:00:00"); // noon avoids DST edge cases
+  const totalDays = Math.round((new Date(endStr + "T12:00:00").getTime() - cursor.getTime()) / 86400000) + 1;
 
-    // Sum episodes in this bucket
-    for (let d = 0; d < bucketDays; d++) {
-      const day = new Date(bucketStart.getTime() + d * dayMs);
-      const key = toLocalDateStr(day);
-      count += dayCounts[key] ?? 0;
-    }
-
-    // Short label: "Mon" for ≤7 days, "Apr 2" for longer ranges
+  for (let i = 0; i < totalDays; i++) {
+    const key = toLocalDateStr(cursor);
     const label = totalDays <= 7
-      ? bucketStart.toLocaleDateString("en", { weekday: "short" })
-      : bucketStart.toLocaleDateString("en", { month: "short", day: "numeric" });
+      ? cursor.toLocaleDateString("en", { weekday: "short" })
+      : cursor.toLocaleDateString("en", { month: "short", day: "numeric" });
 
-    result.push({ label, count });
+    result.push({ label, count: dayCounts[key] ?? 0 });
+    cursor.setDate(cursor.getDate() + 1);
   }
 
   return result;
