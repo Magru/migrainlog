@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MigrainLog — Wireframe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── CSS Custom Properties ── */
+    :root {
+      --bg:           #0F1117;
+      --bg-deep:      #0A0B10;
+      --card:         #171823;
+      --card-raised:  #1C1E2D;
+      --border:       rgba(255,255,255,0.07);
+      --text:         #E8E8F4;
+      --text-muted:   #8B8BA8;
+      --text-dim:     #5A5A72;
+      --accent:       #7B61FF;
+      --accent-glow:  rgba(123,97,255,0.35);
+      --accent-soft:  rgba(123,97,255,0.15);
+      --teal:         #38BDF8;
+      --teal-soft:    rgba(56,189,248,0.15);
+      --mild:         #6366F1;
+      --moderate:     #A855F7;
+      --severe:       #DC2626;
+      --success:      #22C55E;
+      --warning:      #F59E0B;
+      --cell-empty:   #1E1E2E;
+      --radius-sm:    10px;
+      --radius-md:    16px;
+      --radius-lg:    24px;
+      --radius-xl:    32px;
+      --shadow-card:  0 4px 24px rgba(0,0,0,0.4);
+      --shadow-fab:   0 8px 32px rgba(123,97,255,0.45);
+      --font-head:    'Plus Jakarta Sans', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #08090D;
+      font-family: var(--font-body);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 60px;
+    }
+
+    /* ── Desktop label ── */
+    .desktop-label {
+      font-family: var(--font-head);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+    }
+
+    /* ── Phone shell ── */
+    .phone {
+      width: 375px;
+      min-height: 812px;
+      background: var(--bg);
+      border-radius: 44px;
+      border: 1.5px solid rgba(255,255,255,0.10);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 6px #13141A, inset 0 1px 0 rgba(255,255,255,0.08);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* notch */
+    .notch {
+      width: 120px; height: 30px;
+      background: #13141A;
+      border-radius: 0 0 20px 20px;
+      margin: 0 auto;
+      flex-shrink: 0;
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 24px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .status-right { display: flex; gap: 6px; align-items: center; }
+
+    /* ── Scrollable content area ── */
+    .screen-wrap {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: 80px;
+      scrollbar-width: none;
+    }
+    .screen-wrap::-webkit-scrollbar { display: none; }
+
+    /* ── Screens ── */
+    .screen { display: none; padding: 20px 20px 0; }
+    .screen.active { display: block; }
+
+    /* ── Bottom Navigation ── */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 76px;
+      background: rgba(23,24,35,0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 8px 10px;
+      z-index: 100;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+      color: var(--text-dim);
+      border: none;
+      background: none;
+      font-family: var(--font-body);
+    }
+    .nav-item:hover { color: var(--text-muted); }
+    .nav-item.active { color: var(--accent); }
+    .nav-item span { font-size: 10px; font-weight: 500; }
+    .nav-item svg { width: 22px; height: 22px; }
+    .nav-fab {
+      width: 52px; height: 52px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-fab);
+      animation: fabPulse 2.8s ease-in-out infinite;
+      border: none;
+      transition: transform 0.2s;
+      margin-top: -16px;
+    }
+    .nav-fab:hover { transform: scale(1.08); }
+    @keyframes fabPulse {
+      0%, 100% { box-shadow: 0 8px 32px rgba(123,97,255,0.45), 0 0 0 0 rgba(123,97,255,0.4); }
+      50%       { box-shadow: 0 8px 32px rgba(123,97,255,0.60), 0 0 0 10px rgba(123,97,255,0); }
+    }
+
+    /* ── Typography helpers ── */
+    h1, h2, h3 { font-family: var(--font-head); }
+    .t-muted  { color: var(--text-muted); }
+    .t-dim    { color: var(--text-dim); }
+    .t-accent { color: var(--accent); }
+    .t-teal   { color: var(--teal); }
+    .t-mild   { color: var(--mild); }
+    .t-mod    { color: var(--moderate); }
+    .t-sev    { color: var(--severe); }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 18px;
+      box-shadow: var(--shadow-card);
+    }
+    .card + .card { margin-top: 12px; }
+
+    /* ─────────────────────────────
+       SCREEN 1: DASHBOARD
+    ───────────────────────────── */
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 22px;
+    }
+    .dash-title {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .dash-greeting {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent) 0%, #38BDF8 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-head);
+      font-weight: 700; font-size: 15px; color: #fff;
+      flex-shrink: 0;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .stat-cell {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 10px;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+    }
+    .stat-value {
+      font-family: var(--font-head);
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .stat-cell.accent-cell .stat-value { color: var(--accent); }
+    .stat-cell.teal-cell .stat-value { color: var(--teal); }
+
+    /* Last episode card */
+    .episode-card {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+    }
+    .episode-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--moderate), var(--accent));
+    }
+    .ep-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .ep-title {
+      font-family: var(--font-head);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+    .sev-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .sev-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .sev-dot.moderate { background: var(--moderate); box-shadow: 0 0 8px rgba(168,85,247,0.6); }
+    .sev-dot.mild     { background: var(--mild); box-shadow: 0 0 8px rgba(99,102,241,0.6); }
+    .sev-dot.severe   { background: var(--severe); box-shadow: 0 0 8px rgba(220,38,38,0.6); }
+
+    .ep-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .ep-meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .ep-meta-label { font-size: 10px; color: var(--text-dim); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .ep-meta-value { font-size: 14px; font-weight: 600; color: var(--text); }
+
+    .trigger-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .pill {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .pill.accent { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(123,97,255,0.3); }
+    .pill.teal   { background: var(--teal-soft); color: var(--teal); border: 1px solid rgba(56,189,248,0.3); }
+    .pill.warn   { background: rgba(245,158,11,0.12); color: var(--warning); border: 1px solid rgba(245,158,11,0.3); }
+
+    /* Insight card */
+    .insight-card {
+      background: linear-gradient(135deg, rgba(123,97,255,0.12) 0%, rgba(56,189,248,0.08) 100%);
+      border: 1px solid rgba(123,97,255,0.25);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .insight-icon {
+      width: 36px; height: 36px;
+      background: var(--accent-soft);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 17px;
+    }
+    .insight-text { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+    .insight-text strong { color: var(--text); font-weight: 600; }
+
+    /* Weekly mini chart */
+    .week-chart-card {
+      background: var(--card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .week-chart-title {
+      font-family: var(--font-head);
+      font-size: 13px; font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+    .week-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 50px;
+    }
+    .week-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+    .week-bar {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      transition: height 0.4s ease;
+    }
+    .week-day-label { font-size: 9px; color: var(--text-dim); font-weight: 500; }
+
+    /* ─────────────────────────────
+       SCREEN 2: CALENDAR
+    ───────────────────────────── */
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .cal-month {
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .cal-nav-btn {
+      width: 36px; height: 36px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      font-size: 16px;
+    }
+    .cal-nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .cal-day-headers {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+    .cal-day-header {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 4px 0;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+    .cal-cell {
+      aspect-ratio: 1;
+      background: var(--cell-empty);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      border: 1px solid transparent;
+    }
+    .cal-cell:hover { border-color: rgba(255,255,255,0.1); }
+    .cal-cell.empty { background: transparent; cursor: default; }
+    .cal-cell.today { border-color: var(--accent); }
+    .cal-cell.has-episode { cursor: pointer; }
+    .cal-cell.has-episode:hover { transform: scale(1.05); }
+
+    .cal-day-num {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1;
+    }
+    .cal-cell.has-episode .cal-day-num { color: #fff; font-weight: 700; }
+    .cal-cell.today .cal-day-num { color: var(--accent); }
+
+    .cal-sev-bar {
+      width: 16px; height: 3px;
+      border-radius: 2px;
+      margin-top: 3px;
+    }
+
+    .ep-count-dot {
+      position: absolute;
+      top: 4px; right: 4px;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Calendar bottom sheet */
+    .cal-bottom-sheet {
+      margin-top: 20px;
+      background: rgba(23,24,35,0.95);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      padding: 16px 20px 24px;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
+    }
+    .sheet-handle {
+      width: 36px; height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      margin: 0 auto 16px;
+    }
+    .sheet-date {
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    /* ─────────────────────────────
+       SCREEN 3: LOG EPISODE
+    ───────────────────────────── */
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .log-title {
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .close-btn {
+      width: 32px; height: 32px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Step indicator */
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+    .step-dot {
+      height: 4px;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+    .step-dot.active   { background: var(--accent); flex: 2; }
+    .step-dot.done     { background: rgba(123,97,255,0.5); flex: 1; }
+    .step-dot.inactive { background: rgba(255,255,255,0.12); flex: 1; }
+    .step-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    /* Step panels */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+
+    /* Step 1 – Head diagram */
+    .head-instruction {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .head-diagram-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .head-svg-container {
+      position: relative;
+      width: 200px;
+      height: 240px;
+    }
+    /* head region hit areas */
+    .head-region {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .head-region:hover .region-highlight,
+    .head-region.selected .region-highlight {
+      opacity: 1;
+    }
+    .region-highlight { opacity: 0; transition: opacity 0.2s; }
+    .head-region.selected .region-highlight { opacity: 1; }
+
+    .region-labels {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .region-tag {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .region-tag.active {
+      background: var(--accent-soft);
+      border-color: rgba(123,97,255,0.4);
+      color: var(--accent);
+    }
+
+    /* Step 2 – Intensity slider */
+    .intensity-display {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .intensity-number {
+      font-family: var(--font-head);
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--accent), #DC2626);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .intensity-label {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    .slider-wrap {
+      position: relative;
+      padding: 0 4px;
+      margin-bottom: 12px;
+    }
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent) 0%, #A855F7 50%, #DC2626 100%);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4), 0 0 0 3px var(--accent);
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      box-shadow: 0 2px 16px rgba(0,0,0,0.5), 0 0 0 4px var(--accent);
+    }
+    .slider-markers {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 4px 0;
+    }
+    .slider-marker { font-size: 10px; color: var(--text-dim); font-weight: 500; }
+    .intensity-desc {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 16px;
+    }
+
+    /* Step 3 – Triggers & symptoms */
+    .triggers-title {
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    .icon-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 6px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .icon-cell:hover { border-color: rgba(255,255,255,0.15); background: var(--card-raised); }
+    .icon-cell.selected {
+      background: var(--accent-soft);
+      border-color: rgba(123,97,255,0.45);
+    }
+    .icon-cell span { font-size: 20px; }
+    .icon-cell small {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .icon-cell.selected small { color: var(--accent); }
+
+    /* Save button */
+    .save-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(123,97,255,0.45);
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+    .save-btn:hover { background: #8B77FF; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(123,97,255,0.55); }
+
+    .step-nav { display: flex; gap: 10px; margin-top: 24px; }
+    .step-btn-back {
+      flex: 1;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .step-btn-next {
+      flex: 2;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(123,97,255,0.4);
+      transition: all 0.2s;
+    }
+    .step-btn-next:hover { background: #8B77FF; }
+
+    /* ─────────────────────────────
+       SCREEN 4: ANALYTICS
+    ───────────────────────────── */
+    .analytics-header { margin-bottom: 22px; }
+    .analytics-title {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 800;
+    }
+    .analytics-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+
+    /* Section label */
+    .section-label {
+      font-family: var(--font-head);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    /* Frequency area chart */
+    .area-chart-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    svg.area-chart {
+      width: 100%;
+      height: 110px;
+      overflow: visible;
+    }
+
+    /* Donut chart */
+    .donut-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .donut-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+    .donut-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    svg.donut { width: 64px; height: 64px; flex-shrink: 0; }
+    .donut-legend { display: flex; flex-direction: column; gap: 6px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Horizontal bar chart */
+    .bar-chart-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .hbar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .hbar-label { font-size: 12px; color: var(--text-muted); width: 64px; flex-shrink: 0; font-weight: 500; }
+    .hbar-track {
+      flex: 1;
+      height: 10px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .hbar-fill {
+      height: 100%;
+      border-radius: 5px;
+      background: linear-gradient(90deg, var(--accent), #38BDF8);
+    }
+    .hbar-value { font-size: 11px; color: var(--text-dim); width: 24px; text-align: right; font-weight: 600; }
+
+    /* Pain heatmap */
+    .heatmap-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .heatmap-grid {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .heatmap-head-wrap { position: relative; }
+    .heatmap-region-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      justify-content: center;
+    }
+    .hmap-row { display: flex; align-items: center; gap: 8px; }
+    .hmap-label { font-size: 11px; color: var(--text-muted); width: 80px; }
+    .hmap-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+    .hmap-bar-fill { height: 100%; border-radius: 4px; }
+
+    /* Month summary row */
+    .summary-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .summary-cell {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+    .summary-cell-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 6px; }
+    .summary-cell-value { font-family: var(--font-head); font-size: 20px; font-weight: 800; }
+    .summary-cell-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Screen 4 scroll tab */
+    .period-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .period-tab {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text-muted);
+    }
+    .period-tab.active {
+      background: var(--accent-soft);
+      border-color: rgba(123,97,255,0.4);
+      color: var(--accent);
+    }
+
+    /* x-axis labels for area chart */
+    .chart-x-labels {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 2px 0;
+    }
+    .chart-x-label { font-size: 9px; color: var(--text-dim); font-weight: 500; }
+
+    /* Utility */
+    .mt-4  { margin-top: 4px; }
+    .mt-8  { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+    .mt-16 { margin-top: 16px; }
+    .mb-4  { margin-bottom: 4px; }
+    .mb-8  { margin-bottom: 8px; }
+    .mb-12 { margin-bottom: 12px; }
+    .mb-16 { margin-bottom: 16px; }
+    .flex  { display: flex; }
+    .flex-between { display: flex; justify-content: space-between; align-items: center; }
+    .gap-8 { gap: 8px; }
+    .f-semibold { font-weight: 600; }
+    .f-bold { font-weight: 700; }
+    .fs-12 { font-size: 12px; }
+    .fs-13 { font-size: 13px; }
+    .fs-14 { font-size: 14px; }
+
+    /* Glassmorphic overlay on cal bottom sheet */
+    .glass-sheet {
+      background: rgba(18,19,28,0.88);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      margin-top: 16px;
+      box-shadow: 0 -4px 32px rgba(0,0,0,0.4);
+    }
+
+    /* trend arrow */
+    .trend { font-size: 13px; font-weight: 600; }
+    .trend.up   { color: var(--severe); }
+    .trend.down { color: var(--success); }
+    .trend.same { color: var(--text-dim); }
+
+    /* Screen section divider */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0;
+    }
+
+    /* Profile placeholder */
+    .profile-section {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <p class="desktop-label">MigrainLog · UI Wireframe · Mobile 375px</p>
+
+  <div class="phone">
+    <!-- Notch -->
+    <div class="notch"></div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="status-right">
+        <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
+          <rect x="0" y="4" width="3" height="6" rx="1" fill="currentColor" opacity="0.4"/>
+          <rect x="4.5" y="2.5" width="3" height="7.5" rx="1" fill="currentColor" opacity="0.6"/>
+          <rect x="9" y="0.5" width="3" height="9.5" rx="1" fill="currentColor"/>
+          <rect x="14" y="3" width="2" height="7" rx="0.5" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+        </svg>
+        <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor" opacity="0.7">
+          <path d="M7 2C9.2 2 11.1 2.9 12.5 4.3L14 2.8C12.2 1 9.7 0 7 0C4.3 0 1.8 1 0 2.8L1.5 4.3C2.9 2.9 4.8 2 7 2Z"/>
+          <path d="M7 5C8.4 5 9.6 5.6 10.5 6.5L12 5C10.7 3.7 8.9 3 7 3C5.1 3 3.3 3.7 2 5L3.5 6.5C4.4 5.6 5.6 5 7 5Z"/>
+          <circle cx="7" cy="9" r="1.5"/>
+        </svg>
+        <svg width="24" height="11" viewBox="0 0 24 11" fill="none">
+          <rect x="0.5" y="0.5" width="21" height="10" rx="3" stroke="currentColor" stroke-opacity="0.4"/>
+          <rect x="2" y="2" width="16" height="7" rx="2" fill="currentColor"/>
+          <path d="M23 3.5V7.5C23.8 7.1 24 6 24 5.5C24 5 23.8 3.9 23 3.5Z" fill="currentColor" opacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ── Scrollable Area ── -->
+    <div class="screen-wrap">
+
+      <!-- ═══════════════════════════
+           SCREEN 1: DASHBOARD
+      ═══════════════════════════ -->
+      <div class="screen active" id="screen-dashboard">
+        <div class="dash-header">
+          <div>
+            <div class="dash-title">MigrainLog</div>
+            <div class="dash-greeting">Good evening, Max 👋</div>
+          </div>
+          <div class="avatar">M</div>
+        </div>
+
+        <!-- Stats row -->
+        <div class="stats-row">
+          <div class="stat-cell accent-cell">
+            <div class="stat-value">7</div>
+            <div class="stat-label">Episodes</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-value" style="font-size:18px; color: var(--moderate);">6.2</div>
+            <div class="stat-label">Avg Intensity</div>
+          </div>
+          <div class="stat-cell teal-cell">
+            <div class="stat-value" style="font-size:14px; padding-top:4px;">😰</div>
+            <div class="stat-label" style="margin-top:2px;">Top Trigger</div>
+            <div style="font-size:10px; color:var(--teal); font-weight:600; margin-top:2px;">Stress</div>
+          </div>
+        </div>
+
+        <!-- Last episode card -->
+        <div class="episode-card">
+          <div class="ep-header">
+            <span class="ep-title">Last Episode</span>
+            <div class="sev-badge">
+              <div class="sev-dot moderate"></div>
+              <span style="color: var(--moderate); font-size:12px; font-weight:700;">Moderate</span>
+            </div>
+          </div>
+          <div class="ep-meta">
+            <div class="ep-meta-item">
+              <span class="ep-meta-label">Date</span>
+              <span class="ep-meta-value">Mar 30</span>
+            </div>
+            <div class="ep-meta-item">
+              <span class="ep-meta-label">Duration</span>
+              <span class="ep-meta-value">4h 20m</span>
+            </div>
+            <div class="ep-meta-item">
+              <span class="ep-meta-label">Intensity</span>
+              <span class="ep-meta-value" style="color: var(--moderate);">7 / 10</span>
+            </div>
+          </div>
+          <div class="trigger-pills">
+            <span class="pill accent">Stress</span>
+            <span class="pill warn">Poor Sleep</span>
+            <span class="pill teal">Bright Light</span>
+            <span class="pill accent">Aura</span>
+          </div>
+        </div>
+
+        <!-- Insight card -->
+        <div class="insight-card">
+          <div class="insight-icon">💡</div>
+          <div class="insight-text">
+            <strong>Pattern detected:</strong> You've had <strong>3 migraines this week</strong> — most commonly on <strong>Mon &amp; Tue</strong> after high-stress workdays.
+          </div>
+        </div>
+
+        <!-- Weekly chart -->
+        <div class="week-chart-card">
+          <div class="week-chart-title">This Week</div>
+          <div class="week-bars">
+            <div class="week-col">
+              <div class="week-bar" style="height:38px; background: linear-gradient(180deg, var(--severe), rgba(220,38,38,0.3));"></div>
+              <span class="week-day-label">Mon</span>
+            </div>
+            <div class="week-col">
+              <div class="week-bar" style="height:28px; background: linear-gradient(180deg, var(--moderate), rgba(168,85,247,0.3));"></div>
+              <span class="week-day-label">Tue</span>
+            </div>
+            <div class="week-col">
+              <div class="week-bar" style="height:6px; background: var(--card-raised);"></div>
+              <span class="week-day-label">Wed</span>
+            </div>
+            <div class="week-col">
+              <div class="week-bar" style="height:22px; background: linear-gradient(180deg, var(--mild), rgba(99,102,241,0.3));"></div>
+              <span class="week-day-label">Thu</span>
+            </div>
+            <div class="week-col">
+              <div class="week-bar" style="height:6px; background: var(--card-raised);"></div>
+              <span class="week-day-label">Fri</span>
+            </div>
+            <div class="week-col">
+              <div class="week-bar" style="height:6px; background: var(--card-raised);"></div>
+              <span class="week-day-label">Sat</span>
+            </div>
+            <div class="week-col">
+              <div class="week-bar" style="height:6px; background: var(--card-raised);"></div>
+              <span class="week-day-label">Sun</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next likely episode card -->
+        <div class="card" style="border-color: rgba(56,189,248,0.2); background: rgba(56,189,248,0.05);">
+          <div class="flex-between mb-8">
+            <span class="section-label" style="color: var(--teal); margin-bottom:0;">Prediction</span>
+            <span style="font-size:10px; color:var(--text-dim); background:var(--teal-soft); padding:2px 8px; border-radius:10px; color:var(--teal); font-weight:600;">BETA</span>
+          </div>
+          <div style="font-size:14px; color: var(--text); font-weight:600;">Next risk window: <span style="color:var(--teal)">Thu–Fri</span></div>
+          <div style="font-size:12px; color: var(--text-dim); margin-top:4px;">Based on your 14-day cycle pattern + weather forecast</div>
+        </div>
+
+        <div style="height: 16px;"></div>
+      </div>
+
+      <!-- ═══════════════════════════
+           SCREEN 2: CALENDAR
+      ═══════════════════════════ -->
+      <div class="screen" id="screen-calendar">
+        <div class="cal-header">
+          <button class="cal-nav-btn">&#8249;</button>
+          <span class="cal-month">April 2026</span>
+          <button class="cal-nav-btn">&#8250;</button>
+        </div>
+
+        <div class="cal-day-headers">
+          <div class="cal-day-header">Su</div>
+          <div class="cal-day-header">Mo</div>
+          <div class="cal-day-header">Tu</div>
+          <div class="cal-day-header">We</div>
+          <div class="cal-day-header">Th</div>
+          <div class="cal-day-header">Fr</div>
+          <div class="cal-day-header">Sa</div>
+        </div>
+
+        <div class="cal-grid" id="cal-grid">
+          <!-- Week 1 — April starts Wednesday -->
+          <div class="cal-cell empty"></div>
+          <div class="cal-cell empty"></div>
+          <div class="cal-cell empty"></div>
+          <div class="cal-cell">
+            <span class="cal-day-num">1</span>
+          </div>
+          <div class="cal-cell has-episode" style="background: rgba(99,102,241,0.2);" onclick="showSheet('Apr 3, 2026', 'mild', 4)">
+            <span class="cal-day-num">2</span>
+            <div class="cal-sev-bar" style="background: var(--mild);"></div>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">3</span>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">4</span>
+          </div>
+          <!-- Week 2 -->
+          <div class="cal-cell">
+            <span class="cal-day-num">5</span>
+          </div>
+          <div class="cal-cell has-episode" style="background: rgba(168,85,247,0.25);" onclick="showSheet('Apr 6, 2026', 'moderate', 7)">
+            <span class="cal-day-num">6</span>
+            <div class="cal-sev-bar" style="background: var(--moderate);"></div>
+          </div>
+          <div class="cal-cell has-episode" style="background: rgba(220,38,38,0.2);" onclick="showSheet('Apr 7, 2026', 'severe', 9)">
+            <span class="cal-day-num">7</span>
+            <div class="cal-sev-bar" style="background: var(--severe);"></div>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">8</span>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">9</span>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">10</span>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">11</span>
+          </div>
+          <!-- Week 3 -->
+          <div class="cal-cell">
+            <span class="cal-day-num">12</span>
+          </div>
+          <div class="cal-cell has-episode" style="background: rgba(99,102,241,0.2);" onclick="showSheet('Apr 13, 2026', 'mild', 3)">
+            <span class="cal-day-num">13</span>
+            <div class="cal-sev-bar" style="background: var(--mild);"></div>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">14</span>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">15</span>
+          </div>
+          <div class="cal-cell has-episode" style="background: rgba(168,85,247,0.2);" onclick="showSheet('Apr 16, 2026', 'moderate', 6)">
+            <span class="cal-day-num">16</span>
+            <div class="cal-sev-bar" style="background: var(--moderate);"></div>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">17</span>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">18</span>
+          </div>
+          <!-- Week 4 -->
+          <div class="cal-cell">
+            <span class="cal-day-num">19</span>
+          </div>
+          <div class="cal-cell has-episode" style="background: rgba(220,38,38,0.18);" onclick="showSheet('Apr 20, 2026', 'severe', 8)">
+            <span class="cal-day-num">20</span>
+            <div class="cal-sev-bar" style="background: var(--severe);"></div>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">21</span>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">22</span>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">23</span>
+          </div>
+          <div class="cal-cell has-episode" style="background: rgba(99,102,241,0.2);" onclick="showSheet('Apr 24, 2026', 'mild', 4)">
+            <span class="cal-day-num">24</span>
+            <div class="cal-sev-bar" style="background: var(--mild);"></div>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">25</span>
+          </div>
+          <!-- Week 5 -->
+          <div class="cal-cell">
+            <span class="cal-day-num">26</span>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">27</span>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">28</span>
+          </div>
+          <div class="cal-cell today">
+            <span class="cal-day-num">29</span>
+          </div>
+          <div class="cal-cell">
+            <span class="cal-day-num">30</span>
+          </div>
+          <div class="cal-cell empty"></div>
+          <div class="cal-cell empty"></div>
+        </div>
+
+        <!-- Legend -->
+        <div style="display:flex; gap:16px; justify-content:center; margin-top:14px; margin-bottom:16px;">
+          <div style="display:flex; align-items:center; gap:5px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--mild);"></div>
+            <span style="font-size:11px; color:var(--text-dim); font-weight:500;">Mild</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:5px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--moderate);"></div>
+            <span style="font-size:11px; color:var(--text-dim); font-weight:500;">Moderate</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:5px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--severe);"></div>
+            <span style="font-size:11px; color:var(--text-dim); font-weight:500;">Severe</span>
+          </div>
+        </div>
+
+        <!-- Bottom sheet (sample, visible) -->
+        <div class="glass-sheet" id="cal-sheet" style="display:none;">
+          <div class="sheet-handle"></div>
+          <div class="sheet-date" id="sheet-date-label">Apr 7, 2026 — Tuesday</div>
+          <div class="ep-header" style="margin-bottom:12px;">
+            <div class="sev-badge">
+              <div class="sev-dot" id="sheet-dot" style="background:var(--severe); box-shadow: 0 0 8px rgba(220,38,38,0.6);"></div>
+              <span id="sheet-sev-label" style="color:var(--severe); font-size:13px; font-weight:700;">Severe</span>
+            </div>
+            <span style="font-size:12px; color:var(--text-dim);">Intensity: <strong id="sheet-intensity" style="color:var(--text);">9 / 10</strong></span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+            <div style="background:rgba(255,255,255,0.04); border-radius:10px; padding:10px;">
+              <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px; font-weight:600;">Duration</div>
+              <div style="font-size:15px; font-weight:700;">5h 45m</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04); border-radius:10px; padding:10px;">
+              <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px; font-weight:600;">Location</div>
+              <div style="font-size:15px; font-weight:700;">Temple R</div>
+            </div>
+          </div>
+          <div style="margin-bottom:14px;">
+            <div style="font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; font-weight:600; margin-bottom:8px;">Triggers</div>
+            <div class="trigger-pills">
+              <span class="pill accent">Stress</span>
+              <span class="pill warn">Sleep</span>
+              <span class="pill teal">Weather</span>
+            </div>
+          </div>
+          <div style="margin-bottom:14px;">
+            <div style="font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; font-weight:600; margin-bottom:8px;">Symptoms</div>
+            <div class="trigger-pills">
+              <span class="pill accent">Aura</span>
+              <span class="pill teal">Nausea</span>
+              <span class="pill warn">Light Sensitivity</span>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button style="flex:1; padding:12px; border-radius:var(--radius-sm); background:var(--card); border:1px solid var(--border); color:var(--text-muted); font-family:var(--font-body); font-size:13px; font-weight:600; cursor:pointer;">Edit</button>
+            <button style="flex:2; padding:12px; border-radius:var(--radius-sm); background:var(--accent); border:none; color:#fff; font-family:var(--font-body); font-size:13px; font-weight:600; cursor:pointer; box-shadow:0 4px 16px rgba(123,97,255,0.3);">View Full Details</button>
+          </div>
+        </div>
+        <div style="height:16px;"></div>
+      </div>
+
+      <!-- ═══════════════════════════
+           SCREEN 3: LOG EPISODE
+      ═══════════════════════════ -->
+      <div class="screen" id="screen-log">
+        <div class="log-header">
+          <div class="log-title">Log Episode</div>
+          <div class="close-btn">✕</div>
+        </div>
+
+        <!-- Step indicator -->
+        <div class="step-indicator">
+          <div class="step-dot" id="dot-1" style="flex:2; background:var(--accent);"></div>
+          <div class="step-dot" id="dot-2" style="flex:1; background:rgba(255,255,255,0.12);"></div>
+          <div class="step-dot" id="dot-3" style="flex:1; background:rgba(255,255,255,0.12);"></div>
+          <span class="step-label" id="step-label-text">Step 1 of 3 — Location</span>
+        </div>
+
+        <!-- Step 1: Pain Location -->
+        <div class="step-panel active" id="step-1">
+          <div class="head-instruction">Tap the areas where you feel pain</div>
+
+          <div class="head-diagram-wrap">
+            <svg width="200" height="260" viewBox="0 0 200 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Neck -->
+              <rect x="82" y="200" width="36" height="40" rx="8" fill="#1C1E2D" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+              <!-- Head shape -->
+              <ellipse cx="100" cy="110" rx="68" ry="82" fill="#1C1E2D" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+              <!-- Chin area -->
+              <ellipse cx="100" cy="178" rx="32" ry="16" fill="#1C1E2D" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+              <!-- REGION: Forehead (clickable) -->
+              <g class="head-region" id="region-forehead" onclick="toggleRegion('forehead', this)">
+                <ellipse cx="100" cy="70" rx="52" ry="28" fill="transparent"/>
+                <ellipse class="region-highlight" cx="100" cy="70" rx="52" ry="28" fill="rgba(123,97,255,0.25)" />
+                <text x="100" y="74" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="9" font-family="DM Sans, sans-serif" font-weight="500">Forehead</text>
+              </g>
+
+              <!-- REGION: Left Temple -->
+              <g class="head-region" id="region-temple-l" onclick="toggleRegion('temple-l', this)">
+                <ellipse cx="42" cy="110" rx="22" ry="26" fill="transparent"/>
+                <ellipse class="region-highlight" cx="42" cy="110" rx="22" ry="26" fill="rgba(123,97,255,0.25)"/>
+                <text x="42" y="114" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="8" font-family="DM Sans, sans-serif" font-weight="500">Temple</text>
+              </g>
+
+              <!-- REGION: Right Temple -->
+              <g class="head-region" id="region-temple-r" onclick="toggleRegion('temple-r', this)">
+                <ellipse cx="158" cy="110" rx="22" ry="26" fill="transparent"/>
+                <ellipse class="region-highlight" cx="158" cy="110" rx="22" ry="26" fill="rgba(123,97,255,0.25)"/>
+                <text x="158" y="114" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="8" font-family="DM Sans, sans-serif" font-weight="500">Temple</text>
+              </g>
+
+              <!-- REGION: Crown -->
+              <g class="head-region selected" id="region-crown" onclick="toggleRegion('crown', this)">
+                <ellipse cx="100" cy="42" rx="40" ry="22" fill="transparent"/>
+                <ellipse class="region-highlight" cx="100" cy="42" rx="40" ry="22" fill="rgba(123,97,255,0.30)"/>
+                <text x="100" y="46" text-anchor="middle" fill="rgba(190,170,255,0.9)" font-size="9" font-family="DM Sans, sans-serif" font-weight="500">Crown</text>
+              </g>
+
+              <!-- REGION: Behind eyes / orbital -->
+              <g class="head-region" id="region-eyes" onclick="toggleRegion('eyes', this)">
+                <ellipse cx="100" cy="118" rx="38" ry="18" fill="transparent"/>
+                <ellipse class="region-highlight" cx="100" cy="118" rx="38" ry="18" fill="rgba(123,97,255,0.25)"/>
+                <!-- Eyes graphic -->
+                <ellipse cx="82" cy="116" rx="14" ry="9" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                <ellipse cx="118" cy="116" rx="14" ry="9" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                <circle cx="82" cy="116" r="4" fill="rgba(255,255,255,0.2)"/>
+                <circle cx="118" cy="116" r="4" fill="rgba(255,255,255,0.2)"/>
+              </g>
+
+              <!-- REGION: Back of head -->
+              <g class="head-region" id="region-back" onclick="toggleRegion('back', this)">
+                <text x="100" y="162" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="8" font-family="DM Sans, sans-serif" font-weight="500">Back of Head</text>
+              </g>
+
+              <!-- REGION: Neck -->
+              <g class="head-region" id="region-neck" onclick="toggleRegion('neck', this)">
+                <rect x="82" y="200" width="36" height="40" rx="8" fill="transparent"/>
+                <rect class="region-highlight" x="82" y="200" width="36" height="40" rx="8" fill="rgba(123,97,255,0.25)"/>
+                <text x="100" y="225" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="8" font-family="DM Sans, sans-serif" font-weight="500">Neck</text>
+              </g>
+
+              <!-- Nose indicator -->
+              <path d="M96 140 Q100 150 104 140" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <!-- Mouth indicator -->
+              <path d="M88 158 Q100 165 112 158" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+              <!-- Crown glow (active) -->
+              <ellipse cx="100" cy="42" rx="40" ry="22" fill="none" stroke="rgba(123,97,255,0.6)" stroke-width="2" filter="url(#glow)"/>
+              <defs>
+                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                  <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+            </svg>
+          </div>
+
+          <!-- Region tags -->
+          <div class="region-labels">
+            <span class="region-tag" id="tag-forehead" onclick="toggleRegionTag('forehead')">Forehead</span>
+            <span class="region-tag active" id="tag-crown" onclick="toggleRegionTag('crown')">Crown</span>
+            <span class="region-tag" id="tag-temple-l" onclick="toggleRegionTag('temple-l')">Left Temple</span>
+            <span class="region-tag" id="tag-temple-r" onclick="toggleRegionTag('temple-r')">Right Temple</span>
+            <span class="region-tag" id="tag-eyes" onclick="toggleRegionTag('eyes')">Behind Eyes</span>
+            <span class="region-tag" id="tag-back" onclick="toggleRegionTag('back')">Back of Head</span>
+            <span class="region-tag" id="tag-neck" onclick="toggleRegionTag('neck')">Neck</span>
+          </div>
+
+          <div class="step-nav">
+            <button class="step-btn-back" style="opacity:0.4; cursor:not-allowed;">Back</button>
+            <button class="step-btn-next" onclick="goToStep(2)">Next: Intensity →</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Intensity -->
+        <div class="step-panel" id="step-2">
+          <div class="intensity-display">
+            <div class="intensity-number" id="intensity-val">7</div>
+            <div class="intensity-label" id="intensity-desc-text">Severe — hard to concentrate</div>
+          </div>
+          <div class="slider-wrap">
+            <input type="range" id="intensity-slider" min="1" max="10" value="7" oninput="updateIntensity(this.value)"/>
+          </div>
+          <div class="slider-markers">
+            <span class="slider-marker">1 Mild</span>
+            <span class="slider-marker">5 Moderate</span>
+            <span class="slider-marker">10 Severe</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div style="font-family:var(--font-head); font-size:13px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:12px;">Duration</div>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:8px;">
+            <div style="padding:10px 6px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm); text-align:center; cursor:pointer; font-size:13px; font-weight:600; color:var(--text-muted);">30m</div>
+            <div style="padding:10px 6px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm); text-align:center; cursor:pointer; font-size:13px; font-weight:600; color:var(--text-muted);">1h</div>
+            <div style="padding:10px 6px; background:var(--accent-soft); border:1px solid rgba(123,97,255,0.4); border-radius:var(--radius-sm); text-align:center; cursor:pointer; font-size:13px; font-weight:700; color:var(--accent);">4h</div>
+            <div style="padding:10px 6px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm); text-align:center; cursor:pointer; font-size:13px; font-weight:600; color:var(--text-muted);">8h+</div>
+          </div>
+
+          <div class="step-nav">
+            <button class="step-btn-back" onclick="goToStep(1)">← Back</button>
+            <button class="step-btn-next" onclick="goToStep(3)">Next: Triggers →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Triggers & Symptoms -->
+        <div class="step-panel" id="step-3">
+          <div class="triggers-title">Triggers</div>
+          <div class="icon-grid">
+            <div class="icon-cell selected" onclick="this.classList.toggle('selected')">
+              <span>😰</span><small>Stress</small>
+            </div>
+            <div class="icon-cell selected" onclick="this.classList.toggle('selected')">
+              <span>😴</span><small>Sleep</small>
+            </div>
+            <div class="icon-cell" onclick="this.classList.toggle('selected')">
+              <span>🍔</span><small>Food</small>
+            </div>
+            <div class="icon-cell" onclick="this.classList.toggle('selected')">
+              <span>🌧️</span><small>Weather</small>
+            </div>
+            <div class="icon-cell" onclick="this.classList.toggle('selected')">
+              <span>🩺</span><small>Hormones</small>
+            </div>
+            <div class="icon-cell" onclick="this.classList.toggle('selected')">
+              <span>📱</span><small>Screen</small>
+            </div>
+            <div class="icon-cell" onclick="this.classList.toggle('selected')">
+              <span>🍷</span><small>Alcohol</small>
+            </div>
+            <div class="icon-cell" onclick="this.classList.toggle('selected')">
+              <span>☕</span><small>Caffeine</small>
+            </div>
+          </div>
+
+          <div class="triggers-title">Symptoms</div>
+          <div class="icon-grid">
+            <div class="icon-cell selected" onclick="this.classList.toggle('selected')">
+              <span>👁️</span><small>Aura</small>
+            </div>
+            <div class="icon-cell" onclick="this.classList.toggle('selected')">
+              <span>🤢</span><small>Nausea</small>
+            </div>
+            <div class="icon-cell selected" onclick="this.classList.toggle('selected')">
+              <span>🔆</span><small>Light Sens.</small>
+            </div>
+            <div class="icon-cell" onclick="this.classList.toggle('selected')">
+              <span>🔊</span><small>Sound Sens.</small>
+            </div>
+          </div>
+
+          <div class="step-nav" style="margin-top: 16px;">
+            <button class="step-btn-back" onclick="goToStep(2)">← Back</button>
+          </div>
+          <button class="save-btn" style="margin-top:12px;">Save Episode ✓</button>
+          <div style="height: 16px;"></div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════
+           SCREEN 4: ANALYTICS
+      ═══════════════════════════ -->
+      <div class="screen" id="screen-analytics">
+        <div class="analytics-header">
+          <div class="analytics-title">Analytics</div>
+          <div class="analytics-subtitle">March – April 2026</div>
+        </div>
+
+        <!-- Summary row -->
+        <div class="summary-row">
+          <div class="summary-cell">
+            <div class="summary-cell-label">Total Episodes</div>
+            <div class="summary-cell-value" style="color:var(--accent);">14</div>
+            <div class="summary-cell-sub"><span class="trend up">↑ +2</span> vs last 2mo</div>
+          </div>
+          <div class="summary-cell">
+            <div class="summary-cell-label">Avg Intensity</div>
+            <div class="summary-cell-value" style="color:var(--moderate);">6.4</div>
+            <div class="summary-cell-sub"><span class="trend down">↓ –0.3</span> improving</div>
+          </div>
+        </div>
+
+        <!-- Period tabs -->
+        <div class="period-tabs">
+          <div class="period-tab">4 Weeks</div>
+          <div class="period-tab active">2 Months</div>
+          <div class="period-tab">6 Months</div>
+          <div class="period-tab">Year</div>
+        </div>
+
+        <!-- Area chart: weekly frequency -->
+        <div class="area-chart-wrap">
+          <div class="section-label">Weekly Frequency</div>
+          <svg class="area-chart" viewBox="0 0 330 100" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#7B61FF" stop-opacity="0.45"/>
+                <stop offset="100%" stop-color="#7B61FF" stop-opacity="0.02"/>
+              </linearGradient>
+              <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#7B61FF"/>
+                <stop offset="100%" stop-color="#38BDF8"/>
+              </linearGradient>
+            </defs>
+            <!-- Grid lines -->
+            <line x1="0" y1="80" x2="330" y2="80" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+            <line x1="0" y1="56" x2="330" y2="56" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+            <line x1="0" y1="32" x2="330" y2="32" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+            <!-- Y-axis labels -->
+            <text x="0" y="83" fill="rgba(255,255,255,0.25)" font-size="8" font-family="DM Sans">0</text>
+            <text x="0" y="59" fill="rgba(255,255,255,0.25)" font-size="8" font-family="DM Sans">1</text>
+            <text x="0" y="35" fill="rgba(255,255,255,0.25)" font-size="8" font-family="DM Sans">2</text>
+            <!-- Area fill -->
+            <path d="M16 64 L46 40 L76 56 L106 72 L136 32 L166 48 L196 64 L226 40 L256 24 L286 48 L316 56 L316 80 L16 80 Z"
+              fill="url(#areaGrad)"/>
+            <!-- Line -->
+            <path d="M16 64 L46 40 L76 56 L106 72 L136 32 L166 48 L196 64 L226 40 L256 24 L286 48 L316 56"
+              fill="none" stroke="url(#lineGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Data points -->
+            <circle cx="16"  cy="64" r="3.5" fill="#7B61FF"/>
+            <circle cx="46"  cy="40" r="3.5" fill="#7B61FF"/>
+            <circle cx="76"  cy="56" r="3.5" fill="#7B61FF"/>
+            <circle cx="106" cy="72" r="3.5" fill="#8B72FF"/>
+            <circle cx="136" cy="32" r="3.5" fill="#9C83FF"/>
+            <circle cx="166" cy="48" r="3.5" fill="#38BDF8"/>
+            <circle cx="196" cy="64" r="3.5" fill="#38BDF8"/>
+            <circle cx="226" cy="40" r="3.5" fill="#38BDF8"/>
+            <circle cx="256" cy="24" r="4.5" fill="#DC2626" stroke="rgba(220,38,38,0.4)" stroke-width="2"/>
+            <circle cx="286" cy="48" r="3.5" fill="#38BDF8"/>
+            <circle cx="316" cy="56" r="3.5" fill="#38BDF8"/>
+          </svg>
+          <div class="chart-x-labels">
+            <span class="chart-x-label">W1 Feb</span>
+            <span class="chart-x-label">W2</span>
+            <span class="chart-x-label">W3</span>
+            <span class="chart-x-label">W4</span>
+            <span class="chart-x-label">W1 Mar</span>
+            <span class="chart-x-label">W2</span>
+            <span class="chart-x-label">W3</span>
+            <span class="chart-x-label">W4</span>
+            <span class="chart-x-label">W1 Apr</span>
+            <span class="chart-x-label">W2</span>
+            <span class="chart-x-label">Now</span>
+          </div>
+        </div>
+
+        <!-- Severity donut + breakdown -->
+        <div class="section-label">Severity Breakdown</div>
+        <div class="donut-row">
+          <!-- Donut chart -->
+          <div class="donut-card" style="grid-column: span 2;">
+            <div class="donut-wrap">
+              <svg class="donut" viewBox="0 0 64 64">
+                <!-- Background circle -->
+                <circle cx="32" cy="32" r="24" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+                <!-- Severe: 35% = 53.4deg arc -->
+                <circle cx="32" cy="32" r="24" fill="none" stroke="#DC2626" stroke-width="10"
+                  stroke-dasharray="52.7 150.8" stroke-dashoffset="0" transform="rotate(-90 32 32)"/>
+                <!-- Moderate: 45% = 68.6 -->
+                <circle cx="32" cy="32" r="24" fill="none" stroke="#A855F7" stroke-width="10"
+                  stroke-dasharray="67.9 150.8" stroke-dashoffset="-52.7" transform="rotate(-90 32 32)"/>
+                <!-- Mild: 20% = 30.6 -->
+                <circle cx="32" cy="32" r="24" fill="none" stroke="#6366F1" stroke-width="10"
+                  stroke-dasharray="30.2 150.8" stroke-dashoffset="-120.6" transform="rotate(-90 32 32)"/>
+                <!-- Center label -->
+                <text x="32" y="29" text-anchor="middle" fill="white" font-size="9" font-family="Plus Jakarta Sans" font-weight="700">14</text>
+                <text x="32" y="39" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="6" font-family="DM Sans">total</text>
+              </svg>
+              <div class="donut-legend">
+                <div class="legend-item">
+                  <div class="legend-dot" style="background:var(--severe);"></div>
+                  <span>Severe — <strong style="color:var(--text);">5 (35%)</strong></span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot" style="background:var(--moderate);"></div>
+                  <span>Moderate — <strong style="color:var(--text);">6 (45%)</strong></span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot" style="background:var(--mild);"></div>
+                  <span>Mild — <strong style="color:var(--text);">3 (20%)</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top triggers bar chart -->
+        <div class="bar-chart-card">
+          <div class="section-label">Top Triggers</div>
+          <div class="hbar-row">
+            <span class="hbar-label">😰 Stress</span>
+            <div class="hbar-track"><div class="hbar-fill" style="width:85%;"></div></div>
+            <span class="hbar-value">12</span>
+          </div>
+          <div class="hbar-row">
+            <span class="hbar-label">😴 Sleep</span>
+            <div class="hbar-track"><div class="hbar-fill" style="width:71%;"></div></div>
+            <span class="hbar-value">10</span>
+          </div>
+          <div class="hbar-row">
+            <span class="hbar-label">🌧️ Weather</span>
+            <div class="hbar-track"><div class="hbar-fill" style="width:50%;"></div></div>
+            <span class="hbar-value">7</span>
+          </div>
+          <div class="hbar-row">
+            <span class="hbar-label">📱 Screen</span>
+            <div class="hbar-track"><div class="hbar-fill" style="width:43%;"></div></div>
+            <span class="hbar-value">6</span>
+          </div>
+          <div class="hbar-row" style="margin-bottom:0;">
+            <span class="hbar-label">☕ Caffeine</span>
+            <div class="hbar-track"><div class="hbar-fill" style="width:28%;"></div></div>
+            <span class="hbar-value">4</span>
+          </div>
+        </div>
+
+        <!-- Pain location heatmap summary -->
+        <div class="heatmap-card">
+          <div class="section-label">Pain Location Heatmap</div>
+          <div class="heatmap-grid">
+            <!-- Mini head SVG -->
+            <svg width="70" height="95" viewBox="0 0 70 95" fill="none">
+              <rect x="28" y="72" width="14" height="18" rx="4" fill="#1C1E2D" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+              <ellipse cx="35" cy="40" rx="26" ry="36" fill="#1C1E2D" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+              <!-- Crown heat -->
+              <ellipse cx="35" cy="14" rx="18" ry="10" fill="rgba(220,38,38,0.45)"/>
+              <!-- Temple heat -->
+              <ellipse cx="10" cy="38" rx="9" ry="12" fill="rgba(168,85,247,0.4)"/>
+              <ellipse cx="60" cy="38" rx="9" ry="12" fill="rgba(99,102,241,0.3)"/>
+              <!-- Forehead heat -->
+              <ellipse cx="35" cy="25" rx="18" ry="10" fill="rgba(168,85,247,0.25)"/>
+              <!-- Eyes indicator -->
+              <ellipse cx="27" cy="42" rx="6" ry="4" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/>
+              <ellipse cx="43" cy="42" rx="6" ry="4" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/>
+              <!-- Nose -->
+              <path d="M33 55 Q35 59 37 55" stroke="rgba(255,255,255,0.12)" stroke-width="1" fill="none" stroke-linecap="round"/>
+            </svg>
+            <!-- Region frequency bars -->
+            <div class="heatmap-region-rows">
+              <div class="hmap-row">
+                <span class="hmap-label">Crown</span>
+                <div class="hmap-bar-track"><div class="hmap-bar-fill" style="width:85%; background:var(--severe);"></div></div>
+              </div>
+              <div class="hmap-row">
+                <span class="hmap-label">L Temple</span>
+                <div class="hmap-bar-track"><div class="hmap-bar-fill" style="width:70%; background:var(--moderate);"></div></div>
+              </div>
+              <div class="hmap-row">
+                <span class="hmap-label">Forehead</span>
+                <div class="hmap-bar-track"><div class="hmap-bar-fill" style="width:60%; background:var(--moderate);"></div></div>
+              </div>
+              <div class="hmap-row">
+                <span class="hmap-label">R Temple</span>
+                <div class="hmap-bar-track"><div class="hmap-bar-fill" style="width:45%; background:var(--mild);"></div></div>
+              </div>
+              <div class="hmap-row">
+                <span class="hmap-label">Behind Eyes</span>
+                <div class="hmap-bar-track"><div class="hmap-bar-fill" style="width:35%; background:var(--mild);"></div></div>
+              </div>
+              <div class="hmap-row">
+                <span class="hmap-label">Neck</span>
+                <div class="hmap-bar-track"><div class="hmap-bar-fill" style="width:20%; background:var(--accent);"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:16px;"></div>
+      </div>
+
+    </div><!-- /screen-wrap -->
+
+    <!-- ── Bottom Navigation ── -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" id="nav-dashboard" onclick="switchScreen('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" id="nav-calendar" onclick="switchScreen('calendar')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <span>Calendar</span>
+      </button>
+      <button class="nav-fab" id="nav-log" onclick="switchScreen('log')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </button>
+      <button class="nav-item" id="nav-analytics" onclick="switchScreen('analytics')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+        <span>Analytics</span>
+      </button>
+      <button class="nav-item" id="nav-profile" onclick="switchScreen('profile')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+
+  </div><!-- /phone -->
+
+  <script>
+    /* ── Screen switching ── */
+    const screens = ['dashboard', 'calendar', 'log', 'analytics', 'profile'];
+
+    function switchScreen(id) {
+      // hide all screens
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      // deactivate all nav items
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+      // activate target screen
+      const target = document.getElementById('screen-' + id);
+      if (target) target.classList.add('active');
+
+      // activate nav item (not FAB)
+      const navItem = document.getElementById('nav-' + id);
+      if (navItem && !navItem.classList.contains('nav-fab')) {
+        navItem.classList.add('active');
+      }
+
+      // scroll to top
+      document.querySelector('.screen-wrap').scrollTop = 0;
+    }
+
+    /* ── Log Episode step navigation ── */
+    let currentStep = 1;
+
+    function goToStep(step) {
+      // hide all step panels
+      document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+      // show target
+      document.getElementById('step-' + step).classList.add('active');
+      currentStep = step;
+
+      // update step dots
+      const dots = [document.getElementById('dot-1'), document.getElementById('dot-2'), document.getElementById('dot-3')];
+      const labels = ['Step 1 of 3 — Location', 'Step 2 of 3 — Intensity', 'Step 3 of 3 — Triggers'];
+      dots.forEach((d, i) => {
+        d.className = 'step-dot';
+        if (i + 1 < step)      d.style.cssText = 'flex:1; background:rgba(123,97,255,0.5);';
+        else if (i + 1 === step) d.style.cssText = 'flex:2; background:var(--accent);';
+        else                   d.style.cssText = 'flex:1; background:rgba(255,255,255,0.12);';
+      });
+      document.getElementById('step-label-text').textContent = labels[step - 1];
+    }
+
+    /* ── Intensity slider ── */
+    const intensityDescriptions = {
+      1: 'Barely noticeable',
+      2: 'Very mild — can work normally',
+      3: 'Mild — slight discomfort',
+      4: 'Mild-moderate — noticeable',
+      5: 'Moderate — affecting focus',
+      6: 'Moderate-severe — hard to work',
+      7: 'Severe — hard to concentrate',
+      8: 'Severe — need to lie down',
+      9: 'Very severe — debilitating',
+      10: 'Unbearable — emergency level'
+    };
+
+    function updateIntensity(val) {
+      document.getElementById('intensity-val').textContent = val;
+      document.getElementById('intensity-desc-text').textContent = intensityDescriptions[parseInt(val)] || '';
+    }
+
+    /* ── Head region toggle ── */
+    const selectedRegions = new Set(['crown']);
+
+    function toggleRegion(id, el) {
+      const tag = document.getElementById('tag-' + id);
+      if (selectedRegions.has(id)) {
+        selectedRegions.delete(id);
+        el.classList.remove('selected');
+        if (tag) tag.classList.remove('active');
+      } else {
+        selectedRegions.add(id);
+        el.classList.add('selected');
+        if (tag) tag.classList.add('active');
+      }
+    }
+
+    function toggleRegionTag(id) {
+      const region = document.getElementById('region-' + id);
+      const tag = document.getElementById('tag-' + id);
+      if (selectedRegions.has(id)) {
+        selectedRegions.delete(id);
+        if (region) region.classList.remove('selected');
+        if (tag) tag.classList.remove('active');
+      } else {
+        selectedRegions.add(id);
+        if (region) region.classList.add('selected');
+        if (tag) tag.classList.add('active');
+      }
+    }
+
+    /* ── Calendar bottom sheet ── */
+    const sevColors = {
+      mild:     { color: 'var(--mild)', label: 'Mild', shadow: 'rgba(99,102,241,0.6)' },
+      moderate: { color: 'var(--moderate)', label: 'Moderate', shadow: 'rgba(168,85,247,0.6)' },
+      severe:   { color: 'var(--severe)', label: 'Severe', shadow: 'rgba(220,38,38,0.6)' },
+    };
+
+    let sheetOpen = false;
+    let lastSheetDate = '';
+
+    function showSheet(date, severity, intensity) {
+      const sheet = document.getElementById('cal-sheet');
+      const cfg = sevColors[severity] || sevColors.moderate;
+
+      document.getElementById('sheet-date-label').textContent = date;
+      document.getElementById('sheet-dot').style.background = cfg.color;
+      document.getElementById('sheet-dot').style.boxShadow = `0 0 8px ${cfg.shadow}`;
+      document.getElementById('sheet-sev-label').textContent = cfg.label;
+      document.getElementById('sheet-sev-label').style.color = cfg.color;
+      document.getElementById('sheet-intensity').textContent = intensity + ' / 10';
+
+      if (sheetOpen && lastSheetDate === date) {
+        sheet.style.display = 'none';
+        sheetOpen = false;
+        lastSheetDate = '';
+      } else {
+        sheet.style.display = 'block';
+        sheetOpen = true;
+        lastSheetDate = date;
+        // scroll to sheet
+        setTimeout(() => {
+          sheet.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 50);
+      }
+    }
+
+    /* show a sample sheet on calendar load */
+    window.addEventListener('DOMContentLoaded', () => {
+      // auto-show sheet for Apr 7
+    });
+  </script>
+</body>
+</html>

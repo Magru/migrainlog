@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+/* ── Design Tokens ── */
+:root {
+  /* Dark Mode (default) */
+  --bg-base: #0F1117;
+  --bg-surface: #171823;
+  --bg-elevated: #1F2133;
+  --border: #2A2D3E;
+
+  --text-primary: #E8E8F4;
+  --text-secondary: #9192A6;
+
+  --accent-primary: #7B61FF;
+  --accent-secondary: #38BDF8;
+  --accent-mint: #34D399;
+
+  --severity-low: #6366F1;
+  --severity-mid: #A855F7;
+  --severity-high: #DC2626;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  /* Animation */
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --easing: ease-in-out;
+
+  /* shadcn compatibility */
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-elevated);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--accent-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bg-surface);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-surface);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--bg-elevated);
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--severity-high);
+  --destructive-foreground: #ffffff;
+  --ring: var(--accent-primary);
+  --input: var(--border);
+  --radius: var(--radius-md);
+}
+
+[data-theme="light"] {
+  --bg-base: #F5F4F0;
+  --bg-surface: #FFFEF9;
+  --bg-elevated: #F0EEE8;
+  --border: #E2E0EC;
+  --text-primary: #1A1A2E;
+  --text-secondary: #6B6A80;
+  --accent-primary: #6B4FE6;
+}
+
+/* ── Tailwind theme ── */
+@theme inline {
+  --color-bg-base: var(--bg-base);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-border: var(--border);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-accent: var(--accent-primary);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-mint: var(--accent-mint);
+  --color-severity-low: var(--severity-low);
+  --color-severity-mid: var(--severity-mid);
+  --color-severity-high: var(--severity-high);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-ui: var(--accent);
+  --color-accent-ui-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --font-heading: var(--font-plus-jakarta);
+  --font-body: var(--font-dm-sans);
+}
+
+/* ── Base styles ── */
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-body, "DM Sans", sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading, "Plus Jakarta Sans", sans-serif);
+}
+
+/* ── Reduced motion (mandatory for migraine users) ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Safe area ── */
+html {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ── Focus ring ── */
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
