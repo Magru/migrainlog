@@ -8,15 +8,18 @@ import { HeadPainMap } from "./head-pain-map";
 import { IntensitySlider } from "./intensity-slider";
 import { TriggerSymptomGrid } from "./trigger-symptom-grid";
 import { StepIndicator } from "./step-indicator";
+import { MedicationStepContent } from "./medication-step-content";
 import { createEpisode } from "@/lib/actions/episode-actions";
+import { createClient } from "@/lib/supabase/client";
 import type { PainLocation, TriggerType, SymptomType } from "@/lib/types/database";
+import type { UserMedication } from "@/lib/types/episode";
 
 interface LogBottomSheetProps {
   open: boolean;
   onClose: () => void;
 }
 
-const stepTitles = ["Where does it hurt?", "How intense?", "Triggers & Symptoms"];
+const stepTitles = ["Where does it hurt?", "How intense?", "Triggers & Symptoms", "Medications"];
 
 export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
   const shouldReduce = useReducedMotion();
@@ -27,6 +30,8 @@ export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
   const [symptoms, setSymptoms] = useState<SymptomType[]>([]);
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
+  const [userMeds, setUserMeds] = useState<UserMedication[]>([]);
+  const [selectedMeds, setSelectedMeds] = useState<{ id: string; name: string; dose: string }[]>([]);
   const [dateMode, setDateMode] = useState<"now" | "custom">("now");
   const [customDate, setCustomDate] = useState(() => {
     const d = new Date();
@@ -55,6 +60,18 @@ export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
     );
   }
 
+  async function fetchUserMeds() {
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("user_medications")
+      .select("id, name, default_dose")
+      .eq("is_active", true)
+      .order("name");
+    setUserMeds(
+      (data ?? []).map((m) => ({ id: m.id, name: m.name, defaultDose: m.default_dose }))
+    );
+  }
+
   async function handleSave() {
     setSaving(true);
     const startedAt = dateMode === "now"
@@ -70,6 +87,15 @@ export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
     });
 
     if (result.success) {
+      // Save selected medications
+      if (result.episodeId && selectedMeds.length > 0) {
+        const { addEpisodeMedication } = await import("@/lib/actions/medication-actions");
+        await Promise.all(
+          selectedMeds.map((m) =>
+            addEpisodeMedication({ episodeId: result.episodeId!, userMedicationId: m.id, dose: m.dose || undefined })
+          )
+        );
+      }
       setDone(true);
       setTimeout(() => {
         resetAndClose();
@@ -88,6 +114,8 @@ export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
     setSaving(false);
     setDone(false);
     setDateMode("now");
+    setUserMeds([]);
+    setSelectedMeds([]);
     onClose();
   }
 
@@ -150,7 +178,7 @@ export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
               </button>
             </div>
 
-            {!done && <StepIndicator current={step} total={3} />}
+            {!done && <StepIndicator current={step} total={4} />}
 
             {/* Content */}
             <div className="px-4 py-6" style={{ minHeight: 320 }}>
@@ -165,7 +193,7 @@ export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
                 <HeadPainMap selected={locations} onToggle={toggleLocation} />
               ) : step === 2 ? (
                 <IntensitySlider value={intensity} onChange={setIntensity} />
-              ) : (
+              ) : step === 3 ? (
                 <div className="space-y-4">
                   {/* Date/time selector */}
                   <div className="space-y-2">
@@ -218,15 +246,25 @@ export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
                     onToggleSymptom={toggleSymptom}
                   />
                 </div>
+              ) : (
+                <MedicationStepContent
+                  userMeds={userMeds}
+                  selectedMeds={selectedMeds}
+                  onSelect={setSelectedMeds}
+                />
               )}
             </div>
 
             {/* Footer */}
             {!done && (
               <div className="px-4 pb-6" style={{ paddingBottom: "calc(24px + env(safe-area-inset-bottom))" }}>
-                {step < 3 ? (
+                {step < 4 ? (
                   <Button
-                    onClick={() => setStep((s) => s + 1)}
+                    onClick={() => {
+                      const next = step + 1;
+                      setStep(next);
+                      if (next === 4) fetchUserMeds();
+                    }}
                     disabled={step === 1 && locations.length === 0}
                     className="h-14 w-full rounded-full bg-accent text-base font-medium text-white"
                   >
