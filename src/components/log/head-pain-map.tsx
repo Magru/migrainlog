@@ -129,9 +129,9 @@ export function HeadPainMap({ selected, onToggle }: HeadPainMapProps) {
                 width: zone.width,
                 height: zone.height,
                 borderRadius: zone.borderRadius,
-                backgroundColor: isSelected ? "rgba(123, 97, 255, 0.3)" : "transparent",
+                backgroundColor: isSelected ? "rgba(239, 68, 68, 0.35)" : "transparent",
                 border: isSelected
-                  ? "2px solid rgba(123, 97, 255, 0.6)"
+                  ? "2px solid rgba(239, 68, 68, 0.7)"
                   : "1px solid rgba(123, 97, 255, 0.06)",
               }}
             />
