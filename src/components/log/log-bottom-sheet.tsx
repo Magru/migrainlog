@@ -17,11 +17,13 @@ import type { UserMedication } from "@/lib/types/episode";
 interface LogBottomSheetProps {
   open: boolean;
   onClose: () => void;
+  /** Pre-fill date (YYYY-MM-DD) — e.g. from calendar day tap */
+  initialDate?: string;
 }
 
 const stepTitles = ["Where does it hurt?", "How intense?", "Triggers & Symptoms", "Medications"];
 
-export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
+export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetProps) {
   const shouldReduce = useReducedMotion();
   const [step, setStep] = useState(1);
   const [locations, setLocations] = useState<PainLocation[]>([]);
@@ -32,8 +34,9 @@ export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
   const [done, setDone] = useState(false);
   const [userMeds, setUserMeds] = useState<UserMedication[]>([]);
   const [selectedMeds, setSelectedMeds] = useState<{ id: string; name: string; dose: string }[]>([]);
-  const [dateMode, setDateMode] = useState<"now" | "custom">("now");
+  const [dateMode, setDateMode] = useState<"now" | "custom">(initialDate ? "custom" : "now");
   const [customDate, setCustomDate] = useState(() => {
+    if (initialDate) return initialDate;
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   });
@@ -113,7 +116,7 @@ export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
     setSymptoms([]);
     setSaving(false);
     setDone(false);
-    setDateMode("now");
+    setDateMode(initialDate ? "custom" : "now");
     setUserMeds([]);
     setSelectedMeds([]);
     onClose();

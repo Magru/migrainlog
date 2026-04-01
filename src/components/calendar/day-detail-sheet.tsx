@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { X } from "lucide-react";
+import { X, Plus } from "lucide-react";
 import { getSeverityLevel } from "@/lib/types/database";
 import { formatDuration } from "@/lib/utils/date-helpers";
 import { MedicationRatingForm } from "./medication-rating-form";
 import { EpisodeMedicationAdder } from "./episode-medication-adder";
+import { LogBottomSheet } from "@/components/log/log-bottom-sheet";
 import type { EpisodeWithDetails } from "@/lib/types/episode";
 
 interface DayDetailSheetProps {
@@ -27,8 +29,10 @@ const triggerLabels: Record<string, string> = {
 
 export function DayDetailSheet({ date, episodes, onClose }: DayDetailSheetProps) {
   const shouldReduce = useReducedMotion();
+  const [logOpen, setLogOpen] = useState(false);
 
   return (
+    <>
     <AnimatePresence>
       {date && (
         <>
@@ -58,12 +62,21 @@ export function DayDetailSheet({ date, episodes, onClose }: DayDetailSheetProps)
                   day: "numeric",
                 })}
               </h2>
-              <button
-                onClick={onClose}
-                className="flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-bg-surface"
-              >
-                <X size={20} />
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setLogOpen(true)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-accent hover:bg-accent/10"
+                  aria-label="Log episode for this day"
+                >
+                  <Plus size={20} />
+                </button>
+                <button
+                  onClick={onClose}
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-bg-surface"
+                >
+                  <X size={20} />
+                </button>
+              </div>
             </div>
 
             <div
@@ -116,5 +129,14 @@ export function DayDetailSheet({ date, episodes, onClose }: DayDetailSheetProps)
         </>
       )}
     </AnimatePresence>
+
+      {date && (
+        <LogBottomSheet
+          open={logOpen}
+          onClose={() => setLogOpen(false)}
+          initialDate={date}
+        />
+      )}
+    </>
   );
 }
