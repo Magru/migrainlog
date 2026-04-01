@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { toLocalDateStr } from "@/lib/utils/date-helpers";
 import type { EpisodeWithDetails } from "@/lib/types/episode";
 import type { PainLocation, TriggerType, SymptomType } from "@/lib/types/database";
 import { getEpisodeMedications } from "./medication-queries";
@@ -58,8 +59,8 @@ export async function getDashboardStats() {
   const episodes = await getEpisodesInRange(rangeStart, monthEnd);
 
   // Filter to current month only for stats (range may include prior month for weekly chart)
-  const monthStartStr = monthStart.toISOString().slice(0, 10);
-  const monthEpisodes = episodes.filter((e) => e.startedAt.slice(0, 10) >= monthStartStr);
+  const monthStartStr = toLocalDateStr(monthStart);
+  const monthEpisodes = episodes.filter((e) => toLocalDateStr(e.startedAt) >= monthStartStr);
   const totalEpisodes = monthEpisodes.length;
   const avgIntensity = totalEpisodes > 0
     ? Math.round(monthEpisodes.reduce((sum, e) => sum + (e.intensity ?? 0), 0) / totalEpisodes * 10) / 10
@@ -82,9 +83,9 @@ export async function getDashboardStats() {
   for (let i = 6; i >= 0; i--) {
     const date = new Date();
     date.setDate(date.getDate() - i);
-    const dayStr = date.toISOString().slice(0, 10);
+    const dayStr = toLocalDateStr(date);
     const dayLabel = date.toLocaleDateString("en", { weekday: "short" });
-    const dayEpisodes = episodes.filter((e) => e.startedAt.slice(0, 10) === dayStr);
+    const dayEpisodes = episodes.filter((e) => toLocalDateStr(e.startedAt) === dayStr);
     weeklyData.push({
       day: dayLabel,
       count: dayEpisodes.length,
@@ -107,7 +108,7 @@ export async function getMonthEpisodes(year: number, month: number) {
   // Group by date
   const byDay: Record<string, EpisodeWithDetails[]> = {};
   episodes.forEach((ep) => {
-    const day = ep.startedAt.slice(0, 10);
+    const day = toLocalDateStr(ep.startedAt);
     if (!byDay[day]) byDay[day] = [];
     byDay[day].push(ep);
   });

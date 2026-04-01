@@ -234,7 +234,7 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
                         <input
                           type="date"
                           value={customDate}
-                          max={new Date().toISOString().slice(0, 10)}
+                          max={`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`}
                           onChange={(e) => setCustomDate(e.target.value)}
                           className="flex-1 rounded-lg border border-border bg-bg-surface px-2 py-1.5 text-sm text-text-primary"
                         />

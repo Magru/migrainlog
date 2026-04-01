@@ -5,6 +5,7 @@ import { PageTransition } from "@/components/layout/page-transition";
 import { MonthSelector } from "@/components/calendar/month-selector";
 import { CalendarHeatmap } from "@/components/calendar/calendar-heatmap";
 import { DayDetailSheet } from "@/components/calendar/day-detail-sheet";
+import { toLocalDateStr } from "@/lib/utils/date-helpers";
 import type { EpisodeWithDetails } from "@/lib/types/episode";
 
 export default function CalendarPage() {
@@ -24,7 +25,7 @@ export default function CalendarPage() {
       // Group by date
       const grouped: Record<string, EpisodeWithDetails[]> = {};
       (data as EpisodeWithDetails[]).forEach((ep) => {
-        const day = ep.startedAt.slice(0, 10);
+        const day = toLocalDateStr(ep.startedAt);
         if (!grouped[day]) grouped[day] = [];
         grouped[day].push(ep);
       });

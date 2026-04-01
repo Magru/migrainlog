@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { toLocalDateStr } from "@/lib/utils/date-helpers";
 import type { PainLocation, TriggerType } from "@/lib/types/database";
 
 /** Episode frequency within a date range — adapts bucket size to range */
@@ -25,7 +26,7 @@ export async function getWeeklyFrequency(from?: string, to?: string) {
   // Count episodes per bucket date string for fast lookup
   const dayCounts: Record<string, number> = {};
   (episodes ?? []).forEach((ep) => {
-    const day = ep.started_at.slice(0, 10);
+    const day = toLocalDateStr(ep.started_at);
     dayCounts[day] = (dayCounts[day] ?? 0) + 1;
   });
 
@@ -38,7 +39,7 @@ export async function getWeeklyFrequency(from?: string, to?: string) {
     // Sum episodes in this bucket
     for (let d = 0; d < bucketDays; d++) {
       const day = new Date(bucketStart.getTime() + d * dayMs);
-      const key = day.toISOString().slice(0, 10);
+      const key = toLocalDateStr(day);
       count += dayCounts[key] ?? 0;
     }
 

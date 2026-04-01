@@ -1,3 +1,13 @@
+/** User timezone — used for server-side date grouping (Vercel runs in UTC) */
+const USER_TZ = "Asia/Jerusalem";
+
+/** Convert ISO/Date to YYYY-MM-DD in user's local timezone (works on both client and server) */
+export function toLocalDateStr(input: string | Date): string {
+  const d = typeof input === "string" ? new Date(input) : input;
+  // en-CA locale gives YYYY-MM-DD format natively
+  return d.toLocaleDateString("en-CA", { timeZone: USER_TZ });
+}
+
 /** Format relative date like "2 hours ago", "Yesterday", etc. */
 export function relativeDate(iso: string): string {
   const date = new Date(iso);

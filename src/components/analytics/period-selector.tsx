@@ -16,7 +16,7 @@ const presets: { key: PeriodKey; label: string; days: number }[] = [
 ];
 
 function toISODate(d: Date) {
-  return d.toISOString().slice(0, 10);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 function daysAgo(n: number): [string, string] {
