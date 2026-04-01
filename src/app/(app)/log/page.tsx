@@ -7,7 +7,7 @@ import { IntensitySlider } from "@/components/log/intensity-slider";
 import { TriggerSymptomGrid } from "@/components/log/trigger-symptom-grid";
 import { StepIndicator } from "@/components/log/step-indicator";
 import { Button } from "@/components/ui/button";
-import { MedicationPicker } from "@/components/log/medication-picker";
+import { MedicationStepContent } from "@/components/log/medication-step-content";
 import { createEpisode } from "@/lib/actions/episode-actions";
 import { createClient } from "@/lib/supabase/client";
 import { Check, ChevronLeft } from "lucide-react";
@@ -24,12 +24,24 @@ export default function LogPage() {
   const [done, setDone] = useState(false);
   const [episodeId, setEpisodeId] = useState<string | null>(null);
   const [userMeds, setUserMeds] = useState<UserMedication[]>([]);
-  const [showMedPicker, setShowMedPicker] = useState(false);
+  const [selectedMeds, setSelectedMeds] = useState<{ id: string; name: string; dose: string }[]>([]);
 
-  const stepTitles = ["Where does it hurt?", "How intense?", "Triggers & Symptoms"];
+  const stepTitles = ["Where does it hurt?", "How intense?", "Triggers & Symptoms", "Medications"];
 
   function toggle<T>(arr: T[], item: T): T[] {
     return arr.includes(item) ? arr.filter((x) => x !== item) : [...arr, item];
+  }
+
+  async function fetchUserMeds() {
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("user_medications")
+      .select("id, name, default_dose")
+      .eq("is_active", true)
+      .order("name");
+    setUserMeds(
+      (data ?? []).map((m) => ({ id: m.id, name: m.name, defaultDose: m.default_dose }))
+    );
   }
 
   async function handleSave() {
@@ -42,18 +54,18 @@ export default function LogPage() {
       startedAt: new Date().toISOString(),
     });
     if (result.success) {
-      setEpisodeId(result.episodeId ?? null);
+      const epId = result.episodeId ?? null;
+      setEpisodeId(epId);
+      // Save selected medications to the episode
+      if (epId && selectedMeds.length > 0) {
+        const { addEpisodeMedication } = await import("@/lib/actions/medication-actions");
+        await Promise.all(
+          selectedMeds.map((m) =>
+            addEpisodeMedication({ episodeId: epId, userMedicationId: m.id, dose: m.dose || undefined })
+          )
+        );
+      }
       setDone(true);
-      // Fetch user medication library for the picker
-      const supabase = createClient();
-      const { data } = await supabase
-        .from("user_medications")
-        .select("id, name, default_dose")
-        .eq("is_active", true)
-        .order("name");
-      setUserMeds(
-        (data ?? []).map((m) => ({ id: m.id, name: m.name, defaultDose: m.default_dose }))
-      );
     }
     setSaving(false);
   }
@@ -67,7 +79,7 @@ export default function LogPage() {
     setDone(false);
     setEpisodeId(null);
     setUserMeds([]);
-    setShowMedPicker(false);
+    setSelectedMeds([]);
   }
 
   return (
@@ -88,7 +100,7 @@ export default function LogPage() {
           </h1>
         </div>
 
-        {!done && <StepIndicator current={step} total={3} />}
+        {!done && <StepIndicator current={step} total={4} />}
 
         {/* Content */}
         {done ? (
@@ -97,23 +109,6 @@ export default function LogPage() {
               <Check size={32} className="text-accent-mint" />
             </div>
             <p className="text-text-secondary">Episode logged successfully</p>
-
-            {/* Medication logging step */}
-            {episodeId && !showMedPicker && (
-              <Button
-                onClick={() => setShowMedPicker(true)}
-                variant="outline"
-                className="rounded-full"
-              >
-                💊 Took medication?
-              </Button>
-            )}
-            {showMedPicker && episodeId && (
-              <div className="w-full">
-                <MedicationPicker episodeId={episodeId} medications={userMeds} />
-              </div>
-            )}
-
             <Button onClick={reset} variant="outline" className="rounded-full">
               Log Another
             </Button>
@@ -122,21 +117,31 @@ export default function LogPage() {
           <HeadPainMap selected={locations} onToggle={(l) => setLocations(toggle(locations, l))} />
         ) : step === 2 ? (
           <IntensitySlider value={intensity} onChange={setIntensity} />
-        ) : (
+        ) : step === 3 ? (
           <TriggerSymptomGrid
             selectedTriggers={triggers}
             selectedSymptoms={symptoms}
             onToggleTrigger={(t) => setTriggers(toggle(triggers, t))}
             onToggleSymptom={(s) => setSymptoms(toggle(symptoms, s))}
           />
+        ) : (
+          <MedicationStepContent
+            userMeds={userMeds}
+            selectedMeds={selectedMeds}
+            onSelect={setSelectedMeds}
+          />
         )}
 
         {/* Action button */}
         {!done && (
           <div className="pt-4">
-            {step < 3 ? (
+            {step < 4 ? (
               <Button
-                onClick={() => setStep((s) => s + 1)}
+                onClick={() => {
+                  const next = step + 1;
+                  setStep(next);
+                  if (next === 4) fetchUserMeds();
+                }}
                 disabled={step === 1 && locations.length === 0}
                 className="h-14 w-full rounded-full bg-accent text-base font-medium text-white"
               >
