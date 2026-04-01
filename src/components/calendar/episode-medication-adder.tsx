@@ -64,7 +64,7 @@ export function EpisodeMedicationAdder({ episodeId, existingMedNames }: EpisodeM
         className="flex items-center gap-1.5 rounded-full border border-dashed border-border px-2.5 py-1 text-xs text-text-secondary hover:border-accent/40 hover:text-accent"
       >
         <Plus size={12} />
-        💊 Добавить лекарство
+        💊 Add medication
       </button>
     );
   }
@@ -75,18 +75,18 @@ export function EpisodeMedicationAdder({ episodeId, existingMedNames }: EpisodeM
       {added.map((name) => (
         <div key={name} className="flex items-center gap-2 text-xs text-accent">
           <Check size={12} />
-          <span>{name} добавлено</span>
+          <span>{name} added</span>
         </div>
       ))}
 
       {loading ? (
-        <p className="text-xs text-text-secondary">Загрузка...</p>
+        <p className="text-xs text-text-secondary">Loading...</p>
       ) : available.length === 0 ? (
         <p className="text-xs text-text-secondary">
           {meds.length === 0 ? (
-            <a href="/profile" className="text-accent underline">Добавьте лекарства в профиле</a>
+            <a href="/profile" className="text-accent underline">Add medications in Profile</a>
           ) : (
-            "Все лекарства уже добавлены"
+            "All medications already added"
           )}
         </p>
       ) : (
@@ -98,7 +98,7 @@ export function EpisodeMedicationAdder({ episodeId, existingMedNames }: EpisodeM
                 <span className="text-xs font-medium">{med.name}</span>
                 <input
                   type="text"
-                  placeholder="Доза"
+                  placeholder="Dose"
                   value={dose}
                   onChange={(e) => setDose(e.target.value)}
                   className="w-16 rounded bg-bg-surface px-1.5 py-0.5 text-[10px] outline-none placeholder:text-text-secondary"

@@ -12,9 +12,9 @@ interface MedicationRatingFormProps {
 }
 
 const effectivenessOptions: { value: MedicationEffectiveness; label: string }[] = [
-  { value: "none", label: "Не помогло" },
-  { value: "partial", label: "Частично" },
-  { value: "full", label: "Полностью" },
+  { value: "none", label: "No relief" },
+  { value: "partial", label: "Partial" },
+  { value: "full", label: "Full relief" },
 ];
 
 export function MedicationRatingForm({ medication }: MedicationRatingFormProps) {
@@ -88,7 +88,7 @@ export function MedicationRatingForm({ medication }: MedicationRatingFormProps) 
       {/* Relief time slider */}
       <div className="space-y-1">
         <div className="flex items-center justify-between text-xs text-text-secondary">
-          <span>Через сколько помогло</span>
+          <span>Time to relief</span>
           <span className="font-medium text-text-primary">{relief}мин</span>
         </div>
         <input
