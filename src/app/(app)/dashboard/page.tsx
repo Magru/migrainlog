@@ -1,5 +1,6 @@
 import { PageTransition } from "@/components/layout/page-transition";
 import { StatsRow } from "@/components/dashboard/stats-row";
+import { StreakCards } from "@/components/dashboard/streak-cards";
 import { LastEpisodeCard } from "@/components/dashboard/last-episode-card";
 import { WeeklyChart } from "@/components/dashboard/weekly-chart";
 import { InsightCard } from "@/components/dashboard/insight-card";
@@ -17,6 +18,8 @@ export default async function DashboardPage() {
           <h1 className="font-heading text-[28px] font-extrabold">Dashboard</h1>
           <p className="text-sm text-text-secondary">This month&apos;s overview</p>
         </div>
+
+        <StreakCards daysSinceLast={stats.daysSinceLast} longestStreak={stats.longestStreak} />
 
         <StatsRow
           totalEpisodes={stats.totalEpisodes}

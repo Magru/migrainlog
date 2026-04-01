@@ -95,7 +95,43 @@ export async function getDashboardStats() {
     });
   }
 
-  return { totalEpisodes, avgIntensity, topTrigger, lastEpisode, weeklyData };
+  // Streak stats: days since last episode + longest streak without episodes
+  // Fetch all episode dates (lightweight query)
+  const supabaseForStreaks = await createClient();
+  const { data: allEpDates } = await supabaseForStreaks
+    .from("episodes")
+    .select("started_at")
+    .order("started_at", { ascending: true });
+
+  const todayStr = toLocalDateStr(now);
+  let daysSinceLast = 0;
+  let longestStreak = 0;
+
+  if (allEpDates && allEpDates.length > 0) {
+    // Get unique episode dates in local timezone
+    const episodeDays = [...new Set(allEpDates.map((e) => toLocalDateStr(e.started_at)))].sort();
+    const lastEpDate = episodeDays[episodeDays.length - 1];
+
+    // Days since last episode
+    const lastMs = new Date(lastEpDate + "T12:00:00").getTime();
+    const todayMs = new Date(todayStr + "T12:00:00").getTime();
+    daysSinceLast = Math.max(0, Math.round((todayMs - lastMs) / 86400000));
+
+    // Longest streak: find max gap between consecutive episode days
+    // Also consider gap from first episode to today
+    if (episodeDays.length >= 2) {
+      for (let i = 1; i < episodeDays.length; i++) {
+        const prevMs = new Date(episodeDays[i - 1] + "T12:00:00").getTime();
+        const currMs = new Date(episodeDays[i] + "T12:00:00").getTime();
+        const gap = Math.round((currMs - prevMs) / 86400000) - 1; // days between (exclusive)
+        if (gap > longestStreak) longestStreak = gap;
+      }
+    }
+    // Current streak (from last episode to today) could be the longest
+    if (daysSinceLast > longestStreak) longestStreak = daysSinceLast;
+  }
+
+  return { totalEpisodes, avgIntensity, topTrigger, lastEpisode, weeklyData, daysSinceLast, longestStreak };
 }
 
 /** Get episodes grouped by day for a month (calendar view) */
