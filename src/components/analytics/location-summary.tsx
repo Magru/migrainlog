@@ -19,6 +19,8 @@ const locationLabels: Record<string, string> = {
   right_sinus: "R Sinus",
   left_jaw: "L Jaw",
   right_jaw: "R Jaw",
+  left_ear: "L Ear",
+  right_ear: "R Ear",
   left_back_of_head: "L Back",
   right_back_of_head: "R Back",
   left_neck: "L Neck",

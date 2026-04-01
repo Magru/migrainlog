@@ -11,6 +11,8 @@ export type PainLocation =
   | "right_sinus"
   | "left_jaw"
   | "right_jaw"
+  | "left_ear"
+  | "right_ear"
   | "left_back_of_head"
   | "right_back_of_head"
   | "left_neck"

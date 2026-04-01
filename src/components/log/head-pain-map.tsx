@@ -40,6 +40,9 @@ const frontZones: Zone[] = [
   /* Behind eyes / orbital */
   { id: "left_behind_eye", label: "L Eye", top: "30%", left: "18%", width: "32%", height: "11%", borderRadius: "6px" },
   { id: "right_behind_eye", label: "R Eye", top: "30%", left: "50%", width: "32%", height: "11%", borderRadius: "6px" },
+  /* Ears — at eye/cheek level on outer edges */
+  { id: "left_ear", label: "L Ear", top: "34%", left: "2%", width: "14%", height: "18%", borderRadius: "40% 6px 6px 40%" },
+  { id: "right_ear", label: "R Ear", top: "34%", left: "84%", width: "14%", height: "18%", borderRadius: "6px 40% 40% 6px" },
   /* Sinus / maxillary — cheeks below eyes */
   { id: "left_sinus", label: "L Sinus", top: "41%", left: "16%", width: "34%", height: "13%", borderRadius: "6px" },
   { id: "right_sinus", label: "R Sinus", top: "41%", left: "50%", width: "34%", height: "13%", borderRadius: "6px" },
