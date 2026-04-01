@@ -3,6 +3,7 @@
   "short_name": "MigrainLog",
   "description": "Track your migraines, find your patterns",
   "start_url": "/dashboard",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0F1117",
   "theme_color": "#0F1117",

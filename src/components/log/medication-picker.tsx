@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { Pill, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addEpisodeMedication } from "@/lib/actions/medication-actions";
@@ -46,7 +47,7 @@ export function MedicationPicker({ episodeId, medications }: MedicationPickerPro
     return (
       <div className="text-center text-sm text-text-secondary">
         <p>No medications in your library.</p>
-        <a href="/profile" className="text-accent underline">Add in Profile → My Medications</a>
+        <Link href="/profile" className="text-accent underline">Add in Profile → My Medications</Link>
       </div>
     );
   }

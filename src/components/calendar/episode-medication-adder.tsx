@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
+import Link from "next/link";
 import { Pill, Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -84,7 +85,7 @@ export function EpisodeMedicationAdder({ episodeId, existingMedNames }: EpisodeM
       ) : available.length === 0 ? (
         <p className="text-xs text-text-secondary">
           {meds.length === 0 ? (
-            <a href="/profile" className="text-accent underline">Add medications in Profile</a>
+            <Link href="/profile" className="text-accent underline">Add medications in Profile</Link>
           ) : (
             "All medications already added"
           )}

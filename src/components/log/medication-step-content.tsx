@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Pill, Check, X } from "lucide-react";
 import type { UserMedication } from "@/lib/types/episode";
 
@@ -37,7 +38,7 @@ export function MedicationStepContent({ userMeds, selectedMeds, onSelect }: Medi
       <div className="flex flex-col items-center gap-3 py-8 text-center">
         <Pill size={32} className="text-text-secondary" />
         <p className="text-sm text-text-secondary">No medications in your library yet.</p>
-        <a href="/profile" className="text-sm text-accent underline">Add in Profile → My Medications</a>
+        <Link href="/profile" className="text-sm text-accent underline">Add in Profile → My Medications</Link>
         <p className="text-xs text-text-secondary">You can skip this step</p>
       </div>
     );
