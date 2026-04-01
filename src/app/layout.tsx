@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, DM_Sans } from "next/font/google";
 import { Toaster } from "sonner";
+import { SplashHide } from "@/components/layout/splash-hide";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -48,7 +49,20 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-dvh bg-bg-base text-text-primary antialiased">
+        {/* Splash screen — visible until app hydrates */}
+        <div id="splash" className="splash-screen">
+          <div className="splash-content">
+            <div className="splash-rings">
+              <div className="splash-ring splash-ring-1" />
+              <div className="splash-ring splash-ring-2" />
+              <div className="splash-ring splash-ring-3" />
+              <div className="splash-dot" />
+            </div>
+            <p className="splash-title">MigrainLog</p>
+          </div>
+        </div>
         {children}
+        <SplashHide />
         <Toaster
           theme="dark"
           position="top-center"
