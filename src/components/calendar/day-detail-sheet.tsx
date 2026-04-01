@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { getSeverityLevel } from "@/lib/types/database";
 import { formatDuration } from "@/lib/utils/date-helpers";
 import { MedicationRatingForm } from "./medication-rating-form";
+import { EpisodeMedicationAdder } from "./episode-medication-adder";
 import type { EpisodeWithDetails } from "@/lib/types/episode";
 
 interface DayDetailSheetProps {
@@ -102,6 +103,10 @@ export function DayDetailSheet({ date, episodes, onClose }: DayDetailSheetProps)
                           ))}
                         </div>
                       )}
+                      <EpisodeMedicationAdder
+                        episodeId={ep.id}
+                        existingMedNames={ep.medications.map((m) => m.name)}
+                      />
                     </div>
                   );
                 })
