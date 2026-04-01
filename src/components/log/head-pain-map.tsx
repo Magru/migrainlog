@@ -20,30 +20,50 @@ type Zone = {
 };
 
 /**
- * Front-view zones — bilateral (L/R), calibrated to head-map-v2.png.
+ * Front-view zones — calibrated to head-map-v2.png (339x520).
+ * Container 240x370 (same ratio). Covers full face including
+ * sinus (V2 trigeminal) and jaw (V3 trigeminal) areas.
+ *
+ * Anatomy % from top: skull 0-5%, crown 5-15%, forehead 15-30%,
+ * eyes 30-40%, sinus/cheeks 40-52%, mouth/jaw 52-68%,
+ * chin 68-72%, neck 72-95%. Ears ~15-50% on sides.
  */
 const frontZones: Zone[] = [
-  { id: "crown", label: "Crown", top: "0%", left: "20%", width: "60%", height: "13%", borderRadius: "50% 50% 6px 6px" },
-  { id: "left_forehead", label: "L Forehead", top: "13%", left: "15%", width: "35%", height: "17%", borderRadius: "6px" },
-  { id: "right_forehead", label: "R Forehead", top: "13%", left: "50%", width: "35%", height: "17%", borderRadius: "6px" },
-  { id: "left_temple", label: "L Temple", top: "15%", left: "2%", width: "15%", height: "28%", borderRadius: "40% 6px 6px 40%" },
-  { id: "right_temple", label: "R Temple", top: "15%", left: "83%", width: "15%", height: "28%", borderRadius: "6px 40% 40% 6px" },
-  { id: "left_behind_eye", label: "L Behind Eye", top: "30%", left: "15%", width: "35%", height: "12%", borderRadius: "6px" },
-  { id: "right_behind_eye", label: "R Behind Eye", top: "30%", left: "50%", width: "35%", height: "12%", borderRadius: "6px" },
+  /* Crown — midline top of skull */
+  { id: "crown", label: "Crown", top: "0%", left: "22%", width: "56%", height: "15%", borderRadius: "50% 50% 6px 6px" },
+  /* Forehead L/R */
+  { id: "left_forehead", label: "L Forehead", top: "15%", left: "18%", width: "32%", height: "15%", borderRadius: "6px" },
+  { id: "right_forehead", label: "R Forehead", top: "15%", left: "50%", width: "32%", height: "15%", borderRadius: "6px" },
+  /* Temples — sides of head at ear level */
+  { id: "left_temple", label: "L Temple", top: "15%", left: "4%", width: "16%", height: "25%", borderRadius: "40% 6px 6px 40%" },
+  { id: "right_temple", label: "R Temple", top: "15%", left: "80%", width: "16%", height: "25%", borderRadius: "6px 40% 40% 6px" },
+  /* Behind eyes / orbital */
+  { id: "left_behind_eye", label: "L Eye", top: "30%", left: "18%", width: "32%", height: "11%", borderRadius: "6px" },
+  { id: "right_behind_eye", label: "R Eye", top: "30%", left: "50%", width: "32%", height: "11%", borderRadius: "6px" },
+  /* Sinus / maxillary — cheeks below eyes */
+  { id: "left_sinus", label: "L Sinus", top: "41%", left: "16%", width: "34%", height: "13%", borderRadius: "6px" },
+  { id: "right_sinus", label: "R Sinus", top: "41%", left: "50%", width: "34%", height: "13%", borderRadius: "6px" },
+  /* Jaw / mandibular */
+  { id: "left_jaw", label: "L Jaw", top: "54%", left: "14%", width: "36%", height: "16%", borderRadius: "6px 6px 6px 30%" },
+  { id: "right_jaw", label: "R Jaw", top: "54%", left: "50%", width: "36%", height: "16%", borderRadius: "6px 6px 30% 6px" },
+  /* Neck */
+  { id: "left_neck", label: "L Neck", top: "72%", left: "26%", width: "24%", height: "22%", borderRadius: "6px 6px 6px 20%" },
+  { id: "right_neck", label: "R Neck", top: "72%", left: "50%", width: "24%", height: "22%", borderRadius: "6px 6px 20% 6px" },
 ];
 
 /**
- * Back-view zones — bilateral, calibrated to head-map-back.png.
- * Note: on back view, L/R are mirrored (viewer's left = patient's right).
+ * Back-view zones — calibrated to head-map-back.png.
+ * Mirrored: viewer's left = patient's right.
  */
 const backZones: Zone[] = [
-  { id: "crown", label: "Crown", top: "0%", left: "18%", width: "64%", height: "14%", borderRadius: "50% 50% 6px 6px" },
-  { id: "left_back_of_head", label: "L Back", top: "14%", left: "50%", width: "38%", height: "30%", borderRadius: "6px 6px 40% 6px" },
-  { id: "right_back_of_head", label: "R Back", top: "14%", left: "12%", width: "38%", height: "30%", borderRadius: "6px 6px 6px 40%" },
+  { id: "crown", label: "Crown", top: "0%", left: "20%", width: "60%", height: "15%", borderRadius: "50% 50% 6px 6px" },
+  { id: "left_back_of_head", label: "L Back", top: "15%", left: "50%", width: "36%", height: "30%", borderRadius: "6px 6px 40% 6px" },
+  { id: "right_back_of_head", label: "R Back", top: "15%", left: "14%", width: "36%", height: "30%", borderRadius: "6px 6px 6px 40%" },
   { id: "left_neck", label: "L Neck", top: "50%", left: "50%", width: "24%", height: "28%", borderRadius: "6px 6px 20% 6px" },
   { id: "right_neck", label: "R Neck", top: "50%", left: "26%", width: "24%", height: "28%", borderRadius: "6px 6px 6px 20%" },
 ];
 
+/** All unique zones for label lookup */
 const allZones = [...frontZones, ...backZones];
 
 export function HeadPainMap({ selected, onToggle }: HeadPainMapProps) {
@@ -59,9 +79,7 @@ export function HeadPainMap({ selected, onToggle }: HeadPainMapProps) {
         <button
           onClick={() => setView("front")}
           className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all ${
-            view === "front"
-              ? "bg-accent text-white"
-              : "text-text-secondary hover:text-text-primary"
+            view === "front" ? "bg-accent text-white" : "text-text-secondary hover:text-text-primary"
           }`}
         >
           Front
@@ -69,32 +87,30 @@ export function HeadPainMap({ selected, onToggle }: HeadPainMapProps) {
         <button
           onClick={() => setView("back")}
           className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all ${
-            view === "back"
-              ? "bg-accent text-white"
-              : "text-text-secondary hover:text-text-primary"
+            view === "back" ? "bg-accent text-white" : "text-text-secondary hover:text-text-primary"
           }`}
         >
           Back
         </button>
       </div>
 
-      {/* Head illustration with bilateral tap zones */}
+      {/* Head illustration with tap zones */}
       <div className="relative" style={{ width: 240, height: 370 }}>
         <Image
           src={imageSrc}
-          alt={`Head diagram — ${view} view`}
+          alt={`Head — ${view} view`}
           fill
           className="pointer-events-none object-fill"
           priority
         />
 
-        {/* Center line */}
+        {/* Center divider */}
         <div
           className="pointer-events-none absolute left-1/2 opacity-15"
-          style={{ top: "12%", height: "80%", width: 1, backgroundColor: "var(--accent-primary)" }}
+          style={{ top: "15%", height: "78%", width: 1, backgroundColor: "var(--accent-primary)" }}
         />
 
-        {/* Tappable pain zones */}
+        {/* Tappable zones */}
         {zones.map((zone) => {
           const isSelected = selected.includes(zone.id);
           return (
@@ -138,10 +154,7 @@ export function HeadPainMap({ selected, onToggle }: HeadPainMapProps) {
           {selected.map((loc) => {
             const zone = allZones.find((z) => z.id === loc);
             return (
-              <span
-                key={loc}
-                className="rounded-full bg-accent/15 px-2.5 py-0.5 text-xs text-accent"
-              >
+              <span key={loc} className="rounded-full bg-accent/15 px-2.5 py-0.5 text-xs text-accent">
                 {zone?.label ?? loc}
               </span>
             );
