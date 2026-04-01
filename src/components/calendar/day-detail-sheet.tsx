@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
 import { getSeverityLevel } from "@/lib/types/database";
 import { formatDuration } from "@/lib/utils/date-helpers";
+import { MedicationRatingForm } from "./medication-rating-form";
 import type { EpisodeWithDetails } from "@/lib/types/episode";
 
 interface DayDetailSheetProps {
@@ -91,6 +92,13 @@ export function DayDetailSheet({ date, episodes, onClose }: DayDetailSheetProps)
                             <span key={t} className="rounded-full bg-bg-elevated px-2 py-0.5 text-[10px] text-text-secondary">
                               {triggerLabels[t] ?? t}
                             </span>
+                          ))}
+                        </div>
+                      )}
+                      {ep.medications.length > 0 && (
+                        <div className="space-y-1.5">
+                          {ep.medications.map((med) => (
+                            <MedicationRatingForm key={med.id} medication={med} />
                           ))}
                         </div>
                       )}

@@ -36,6 +36,8 @@ export type SymptomType =
   | "light_sensitivity"
   | "sound_sensitivity";
 
+export type MedicationEffectiveness = "none" | "partial" | "full";
+
 export type SeverityLevel = "mild" | "moderate" | "severe";
 
 export function getSeverityLevel(intensity: number): SeverityLevel {
@@ -174,32 +176,73 @@ export type Database = {
           },
         ];
       };
-      medications: {
+      user_medications: {
+        Row: {
+          id: string;
+          user_id: string;
+          name: string;
+          default_dose: string | null;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          name: string;
+          default_dose?: string | null;
+          is_active?: boolean;
+        };
+        Update: {
+          name?: string;
+          default_dose?: string | null;
+          is_active?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "user_medications_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      episode_medications: {
         Row: {
           id: string;
           episode_id: string;
-          name: string;
+          user_medication_id: string;
           dose: string | null;
           taken_at: string;
+          relief_minutes: number | null;
+          effectiveness: MedicationEffectiveness | null;
         };
         Insert: {
           id?: string;
           episode_id: string;
-          name: string;
+          user_medication_id: string;
           dose?: string | null;
           taken_at?: string;
         };
         Update: {
-          name?: string;
           dose?: string | null;
           taken_at?: string;
+          relief_minutes?: number | null;
+          effectiveness?: MedicationEffectiveness | null;
         };
         Relationships: [
           {
-            foreignKeyName: "medications_episode_id_fkey";
+            foreignKeyName: "episode_medications_episode_id_fkey";
             columns: ["episode_id"];
             isOneToOne: false;
             referencedRelation: "episodes";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "episode_medications_user_medication_id_fkey";
+            columns: ["user_medication_id"];
+            isOneToOne: false;
+            referencedRelation: "user_medications";
             referencedColumns: ["id"];
           },
         ];

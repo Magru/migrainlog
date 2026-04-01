@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import type { EpisodeWithDetails } from "@/lib/types/episode";
 import type { PainLocation, TriggerType, SymptomType } from "@/lib/types/database";
+import { getEpisodeMedications } from "./medication-queries";
 
 /** Get episodes for a date range with all relations */
 export async function getEpisodesInRange(from: string, to: string): Promise<EpisodeWithDetails[]> {
@@ -17,10 +18,11 @@ export async function getEpisodesInRange(from: string, to: string): Promise<Epis
 
   const ids = episodes.map((e) => e.id);
 
-  const [locRes, trigRes, symRes] = await Promise.all([
+  const [locRes, trigRes, symRes, medsByEpisode] = await Promise.all([
     supabase.from("episode_locations").select("*").in("episode_id", ids),
     supabase.from("episode_triggers").select("*").in("episode_id", ids),
     supabase.from("episode_symptoms").select("*").in("episode_id", ids),
+    getEpisodeMedications(ids),
   ]);
 
   return episodes.map((ep) => ({
@@ -40,6 +42,7 @@ export async function getEpisodesInRange(from: string, to: string): Promise<Epis
     symptoms: (symRes.data ?? [])
       .filter((s) => s.episode_id === ep.id)
       .map((s) => s.symptom as SymptomType),
+    medications: medsByEpisode[ep.id] ?? [],
   }));
 }
 
