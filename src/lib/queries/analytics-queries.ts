@@ -18,10 +18,9 @@ export async function getWeeklyFrequency(from?: string, to?: string) {
   const dayMs = 86400000;
   const totalDays = Math.max(1, Math.round((endDate.getTime() - startDate.getTime()) / dayMs));
 
-  // Choose bucket strategy: daily for ≤31 days, weekly for longer
-  const useDaily = totalDays <= 31;
-  const bucketDays = useDaily ? 1 : 7;
-  const bucketCount = Math.ceil(totalDays / bucketDays);
+  // Always use daily buckets — chart handles scrolling for large ranges
+  const bucketDays = 1;
+  const bucketCount = totalDays;
 
   // Count episodes per bucket date string for fast lookup
   const dayCounts: Record<string, number> = {};
@@ -43,7 +42,8 @@ export async function getWeeklyFrequency(from?: string, to?: string) {
       count += dayCounts[key] ?? 0;
     }
 
-    const label = useDaily
+    // Short label: "Mon" for ≤7 days, "Apr 2" for longer ranges
+    const label = totalDays <= 7
       ? bucketStart.toLocaleDateString("en", { weekday: "short" })
       : bucketStart.toLocaleDateString("en", { month: "short", day: "numeric" });
 
