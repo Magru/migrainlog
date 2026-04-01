@@ -67,7 +67,7 @@ export function DayDetailSheet({ date, episodes, onClose }: DayDetailSheetProps)
 
             <div
               className="space-y-3 overflow-y-auto px-4"
-              style={{ maxHeight: "50vh", paddingBottom: "calc(24px + env(safe-area-inset-bottom))" }}
+              style={{ maxHeight: "60vh", paddingBottom: "calc(100px + env(safe-area-inset-bottom))" }}
             >
               {episodes.length === 0 ? (
                 <p className="py-8 text-center text-sm text-text-secondary">No episodes this day</p>
