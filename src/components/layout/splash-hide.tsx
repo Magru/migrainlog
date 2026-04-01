@@ -10,7 +10,9 @@ export function SplashHide() {
 
     // Fade out after short delay
     const fadeTimer = setTimeout(() => {
-      splash.classList.add("splash-hidden");
+      splash.style.opacity = "0";
+      splash.style.visibility = "hidden";
+      splash.style.pointerEvents = "none";
     }, 400);
 
     // Remove from DOM after fade completes

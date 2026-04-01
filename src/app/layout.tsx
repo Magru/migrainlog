@@ -49,16 +49,37 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-dvh bg-bg-base text-text-primary antialiased">
-        {/* Splash screen — visible until app hydrates */}
-        <div id="splash" className="splash-screen">
-          <div className="splash-content">
-            <div className="splash-rings">
-              <div className="splash-ring splash-ring-1" />
-              <div className="splash-ring splash-ring-2" />
-              <div className="splash-ring splash-ring-3" />
-              <div className="splash-dot" />
+        {/* Splash screen — inline styles so it renders before CSS loads */}
+        <div
+          id="splash"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "#0F1117",
+            transition: "opacity 0.4s ease, visibility 0.4s ease",
+          }}
+        >
+          <style dangerouslySetInnerHTML={{ __html: `
+            @keyframes sp-spin { to { transform: rotate(360deg) } }
+            @keyframes sp-pulse { 0%,100% { transform: scale(1); opacity:.8 } 50% { transform: scale(1.4); opacity:1 } }
+            @media (prefers-reduced-motion: reduce) {
+              .sp-r1,.sp-r2,.sp-r3,.sp-dot { animation: none !important; }
+            }
+          `}} />
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 24 }}>
+            <div style={{ position: "relative", width: 100, height: 100 }}>
+              <div className="sp-r1" style={{ position: "absolute", inset: 0, borderRadius: "50%", border: "2px solid transparent", borderTopColor: "#7B61FF", animation: "sp-spin 1.2s linear infinite" }} />
+              <div className="sp-r2" style={{ position: "absolute", inset: 12, borderRadius: "50%", border: "2px solid transparent", borderRightColor: "#38BDF8", animation: "sp-spin 1.6s linear infinite reverse" }} />
+              <div className="sp-r3" style={{ position: "absolute", inset: 24, borderRadius: "50%", border: "2px solid transparent", borderBottomColor: "#34D399", animation: "sp-spin 2s linear infinite" }} />
+              <div className="sp-dot" style={{ position: "absolute", top: "50%", left: "50%", width: 16, height: 16, margin: "-8px 0 0 -8px", borderRadius: "50%", background: "#7B61FF", animation: "sp-pulse 1.2s ease-in-out infinite" }} />
             </div>
-            <p className="splash-title">MigrainLog</p>
+            <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(135deg, #7B61FF, #38BDF8, #34D399)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent", margin: 0 }}>
+              MigrainLog
+            </p>
           </div>
         </div>
         {children}
