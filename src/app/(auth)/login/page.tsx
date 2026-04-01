@@ -38,7 +38,10 @@ export default function LoginPage() {
         if (result.error) setError(result.error);
         else setMessage("Check your email to confirm your account!");
       }
-    } catch {
+    } catch (err: unknown) {
+      // Next.js redirect() throws NEXT_REDIRECT — not an actual error
+      const msg = err instanceof Error ? err.message : "";
+      if (msg.includes("NEXT_REDIRECT")) return;
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
