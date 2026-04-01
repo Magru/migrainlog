@@ -94,7 +94,7 @@ export function DayDetailSheet({ date, episodes, onClose }: DayDetailSheetProps)
                         <div className={`h-2.5 w-2.5 rounded-full ${severityDot[severity]}`} />
                         <span className="font-medium">Intensity {ep.intensity}/10</span>
                         <span className="text-xs text-text-secondary">
-                          {new Date(ep.startedAt).toLocaleTimeString("en", { hour: "numeric", minute: "2-digit" })}
+                          {new Date(ep.startedAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false })}
                         </span>
                         <span className="text-xs text-text-secondary">
                           {formatDuration(ep.startedAt, ep.endedAt)}

@@ -77,9 +77,15 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
 
   async function handleSave() {
     setSaving(true);
-    const startedAt = dateMode === "now"
-      ? new Date().toISOString()
-      : new Date(`${customDate}T${customTime}`).toISOString();
+    let startedAt: string;
+    if (dateMode === "now") {
+      startedAt = new Date().toISOString();
+    } else {
+      // Build date in local timezone — avoid UTC shift that moves the date back a day
+      const [y, m, d] = customDate.split("-").map(Number);
+      const [h, min] = customTime.split(":").map(Number);
+      startedAt = new Date(y, m - 1, d, h, min).toISOString();
+    }
 
     const result = await createEpisode({
       locations,
