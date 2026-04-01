@@ -1,32 +1,55 @@
 import { createClient } from "@/lib/supabase/server";
 import type { PainLocation, TriggerType } from "@/lib/types/database";
 
-/** Episodes per week within a date range */
+/** Episode frequency within a date range — adapts bucket size to range */
 export async function getWeeklyFrequency(from?: string, to?: string) {
   const supabase = await createClient();
   const endDate = to ? new Date(to) : new Date();
-  const startDate = from ? new Date(from) : new Date(endDate.getTime() - 8 * 7 * 86400000);
+  const startDate = from ? new Date(from) : new Date(endDate.getTime() - 56 * 86400000);
 
-  const weeks: { label: string; count: number }[] = [];
-  const totalMs = endDate.getTime() - startDate.getTime();
-  const totalWeeks = Math.max(1, Math.ceil(totalMs / (7 * 86400000)));
-  const buckets = Math.min(totalWeeks, 12);
+  // Fetch all episodes in range (single query)
+  const { data: episodes } = await supabase
+    .from("episodes")
+    .select("started_at")
+    .gte("started_at", startDate.toISOString())
+    .lte("started_at", endDate.toISOString());
 
-  for (let i = 0; i < buckets; i++) {
-    const bucketStart = new Date(startDate.getTime() + (i * totalMs) / buckets);
-    const bucketEnd = new Date(startDate.getTime() + ((i + 1) * totalMs) / buckets);
+  const dayMs = 86400000;
+  const totalDays = Math.max(1, Math.round((endDate.getTime() - startDate.getTime()) / dayMs));
 
-    const { count } = await supabase
-      .from("episodes")
-      .select("*", { count: "exact", head: true })
-      .gte("started_at", bucketStart.toISOString())
-      .lt("started_at", bucketEnd.toISOString());
+  // Choose bucket strategy: daily for ≤31 days, weekly for longer
+  const useDaily = totalDays <= 31;
+  const bucketDays = useDaily ? 1 : 7;
+  const bucketCount = Math.ceil(totalDays / bucketDays);
 
-    const label = bucketStart.toLocaleDateString("en", { month: "short", day: "numeric" });
-    weeks.push({ label, count: count ?? 0 });
+  // Count episodes per bucket date string for fast lookup
+  const dayCounts: Record<string, number> = {};
+  (episodes ?? []).forEach((ep) => {
+    const day = ep.started_at.slice(0, 10);
+    dayCounts[day] = (dayCounts[day] ?? 0) + 1;
+  });
+
+  const result: { label: string; count: number }[] = [];
+
+  for (let i = 0; i < bucketCount; i++) {
+    const bucketStart = new Date(startDate.getTime() + i * bucketDays * dayMs);
+    let count = 0;
+
+    // Sum episodes in this bucket
+    for (let d = 0; d < bucketDays; d++) {
+      const day = new Date(bucketStart.getTime() + d * dayMs);
+      const key = day.toISOString().slice(0, 10);
+      count += dayCounts[key] ?? 0;
+    }
+
+    const label = useDaily
+      ? bucketStart.toLocaleDateString("en", { weekday: "short" })
+      : bucketStart.toLocaleDateString("en", { month: "short", day: "numeric" });
+
+    result.push({ label, count });
   }
 
-  return weeks;
+  return result;
 }
 
 /** Severity distribution within date range */
@@ -133,7 +156,8 @@ export async function getSummaryStats(from?: string, to?: string) {
     ? Math.round((intensities.reduce((a, b) => a + b, 0) / intensities.length) * 10) / 10
     : 0;
 
-  const fromDate = from ? new Date(from) : new Date(episodes[episodes.length - 1].started_at);
+  const dates = episodes.map((e) => new Date(e.started_at).getTime());
+  const fromDate = from ? new Date(from) : new Date(Math.min(...dates));
   const toDate = to ? new Date(to) : new Date();
   const weeks = Math.max(1, (toDate.getTime() - fromDate.getTime()) / (7 * 86400000));
 

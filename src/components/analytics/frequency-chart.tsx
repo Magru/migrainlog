@@ -8,10 +8,16 @@ interface FrequencyChartProps {
 
 export function FrequencyChart({ data }: FrequencyChartProps) {
   const hasData = data.some((d) => d.count > 0);
+  const isDaily = data.length > 12;
+
+  // For 30-day daily view, show every Nth label to avoid crowding
+  const labelInterval = data.length <= 7 ? 0 : data.length <= 14 ? 1 : Math.floor(data.length / 7) - 1;
 
   return (
     <div className="rounded-[var(--radius-md)] border border-border bg-bg-surface p-4">
-      <h3 className="mb-4 text-sm font-medium text-text-secondary">Weekly Frequency</h3>
+      <h3 className="mb-4 text-sm font-medium text-text-secondary">
+        {isDaily ? "Daily Frequency" : "Weekly Frequency"}
+      </h3>
       {!hasData ? (
         <p className="py-8 text-center text-sm text-text-secondary">No data yet</p>
       ) : (
@@ -28,6 +34,7 @@ export function FrequencyChart({ data }: FrequencyChartProps) {
               axisLine={false}
               tickLine={false}
               tick={{ fill: "var(--text-secondary)", fontSize: 11 }}
+              interval={labelInterval}
             />
             <YAxis hide allowDecimals={false} />
             <Area

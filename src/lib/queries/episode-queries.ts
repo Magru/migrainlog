@@ -46,29 +46,35 @@ export async function getEpisodesInRange(from: string, to: string): Promise<Epis
   }));
 }
 
-/** Dashboard stats for current month */
+/** Dashboard stats for current month (+ last 7 days for weekly chart) */
 export async function getDashboardStats() {
   const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  // Use whichever is earlier: month start or 7 days ago (so weekly chart is always correct)
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const weekAgo = new Date(now.getTime() - 6 * 86400000);
+  const rangeStart = new Date(Math.min(monthStart.getTime(), weekAgo.getTime())).toISOString();
   const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
 
-  const episodes = await getEpisodesInRange(monthStart, monthEnd);
+  const episodes = await getEpisodesInRange(rangeStart, monthEnd);
 
-  const totalEpisodes = episodes.length;
+  // Filter to current month only for stats (range may include prior month for weekly chart)
+  const monthStartStr = monthStart.toISOString().slice(0, 10);
+  const monthEpisodes = episodes.filter((e) => e.startedAt.slice(0, 10) >= monthStartStr);
+  const totalEpisodes = monthEpisodes.length;
   const avgIntensity = totalEpisodes > 0
-    ? Math.round(episodes.reduce((sum, e) => sum + (e.intensity ?? 0), 0) / totalEpisodes * 10) / 10
+    ? Math.round(monthEpisodes.reduce((sum, e) => sum + (e.intensity ?? 0), 0) / totalEpisodes * 10) / 10
     : 0;
 
   // Find most common trigger
   const triggerCounts: Record<string, number> = {};
-  episodes.forEach((ep) => {
+  monthEpisodes.forEach((ep) => {
     ep.triggers.forEach((t) => {
       triggerCounts[t] = (triggerCounts[t] ?? 0) + 1;
     });
   });
   const topTrigger = Object.entries(triggerCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
 
-  // Last episode
+  // Last episode (from all fetched, not just this month)
   const lastEpisode = episodes[0] ?? null;
 
   // Weekly data (last 7 days)
