@@ -27,6 +27,15 @@ export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
   const [symptoms, setSymptoms] = useState<SymptomType[]>([]);
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
+  const [dateMode, setDateMode] = useState<"now" | "custom">("now");
+  const [customDate, setCustomDate] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  });
+  const [customTime, setCustomTime] = useState(() => {
+    const d = new Date();
+    return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  });
 
   function toggleLocation(loc: PainLocation) {
     setLocations((prev) =>
@@ -48,12 +57,16 @@ export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
 
   async function handleSave() {
     setSaving(true);
+    const startedAt = dateMode === "now"
+      ? new Date().toISOString()
+      : new Date(`${customDate}T${customTime}`).toISOString();
+
     const result = await createEpisode({
       locations,
       intensity,
       triggers,
       symptoms,
-      startedAt: new Date().toISOString(),
+      startedAt,
     });
 
     if (result.success) {
@@ -74,6 +87,7 @@ export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
     setSymptoms([]);
     setSaving(false);
     setDone(false);
+    setDateMode("now");
     onClose();
   }
 
@@ -152,12 +166,58 @@ export function LogBottomSheet({ open, onClose }: LogBottomSheetProps) {
               ) : step === 2 ? (
                 <IntensitySlider value={intensity} onChange={setIntensity} />
               ) : (
-                <TriggerSymptomGrid
-                  selectedTriggers={triggers}
-                  selectedSymptoms={symptoms}
-                  onToggleTrigger={toggleTrigger}
-                  onToggleSymptom={toggleSymptom}
-                />
+                <div className="space-y-4">
+                  {/* Date/time selector */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-text-secondary">When did it start?</p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setDateMode("now")}
+                        className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
+                          dateMode === "now"
+                            ? "border-accent bg-accent/20 text-accent"
+                            : "border-border text-text-secondary"
+                        }`}
+                      >
+                        Now
+                      </button>
+                      <button
+                        onClick={() => setDateMode("custom")}
+                        className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
+                          dateMode === "custom"
+                            ? "border-accent bg-accent/20 text-accent"
+                            : "border-border text-text-secondary"
+                        }`}
+                      >
+                        Other date
+                      </button>
+                    </div>
+                    {dateMode === "custom" && (
+                      <div className="flex gap-2">
+                        <input
+                          type="date"
+                          value={customDate}
+                          max={new Date().toISOString().slice(0, 10)}
+                          onChange={(e) => setCustomDate(e.target.value)}
+                          className="flex-1 rounded-lg border border-border bg-bg-surface px-2 py-1.5 text-sm text-text-primary"
+                        />
+                        <input
+                          type="time"
+                          value={customTime}
+                          onChange={(e) => setCustomTime(e.target.value)}
+                          className="w-24 rounded-lg border border-border bg-bg-surface px-2 py-1.5 text-sm text-text-primary"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <TriggerSymptomGrid
+                    selectedTriggers={triggers}
+                    selectedSymptoms={symptoms}
+                    onToggleTrigger={toggleTrigger}
+                    onToggleSymptom={toggleSymptom}
+                  />
+                </div>
               )}
             </div>
 
