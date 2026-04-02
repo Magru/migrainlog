@@ -128,6 +128,39 @@ export async function getLocationFrequency(from?: string, to?: string) {
   }));
 }
 
+/** Cycle phase distribution within date range (only episodes with cycle data) */
+export async function getCyclePhaseStats(from?: string, to?: string) {
+  const supabase = await createClient();
+
+  let query = supabase
+    .from("episodes")
+    .select("menstrual_phase, ovulation_phase")
+    .not("menstrual_phase", "is", null);
+  if (from) query = query.gte("started_at", from);
+  if (to) query = query.lte("started_at", to);
+
+  const { data } = await query;
+  const episodes = data ?? [];
+
+  const menstrual: Record<string, number> = {};
+  const ovulation: Record<string, number> = {};
+
+  episodes.forEach((ep) => {
+    if (ep.menstrual_phase && ep.menstrual_phase !== "not_applicable") {
+      menstrual[ep.menstrual_phase] = (menstrual[ep.menstrual_phase] ?? 0) + 1;
+    }
+    if (ep.ovulation_phase && ep.ovulation_phase !== "not_applicable") {
+      ovulation[ep.ovulation_phase] = (ovulation[ep.ovulation_phase] ?? 0) + 1;
+    }
+  });
+
+  return {
+    menstrual: Object.entries(menstrual).map(([phase, count]) => ({ phase, count })),
+    ovulation: Object.entries(ovulation).map(([phase, count]) => ({ phase, count })),
+    total: episodes.length,
+  };
+}
+
 /** Summary stats for a date range */
 export async function getSummaryStats(from?: string, to?: string) {
   const supabase = await createClient();

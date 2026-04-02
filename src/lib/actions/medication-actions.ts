@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { MedicationEffectiveness } from "@/lib/types/database";
 
@@ -17,7 +16,6 @@ export async function addUserMedication(data: { name: string; defaultDose?: stri
 
   if (error) return { error: error.message };
 
-  revalidatePath("/profile");
   return { success: true };
 }
 
@@ -37,7 +35,6 @@ export async function updateUserMedication(id: string, data: { name?: string; de
 
   if (error) return { error: error.message };
 
-  revalidatePath("/profile");
   return { success: true };
 }
 
@@ -54,7 +51,6 @@ export async function deactivateUserMedication(id: string) {
 
   if (error) return { error: error.message };
 
-  revalidatePath("/profile");
   return { success: true };
 }
 
@@ -75,8 +71,6 @@ export async function addEpisodeMedication(data: {
 
   if (error) return { error: error.message };
 
-  revalidatePath("/dashboard");
-  revalidatePath("/calendar");
   return { success: true };
 }
 
@@ -98,7 +92,5 @@ export async function rateEpisodeMedication(
 
   if (error) return { error: error.message };
 
-  revalidatePath("/calendar");
-  revalidatePath("/dashboard");
   return { success: true };
 }

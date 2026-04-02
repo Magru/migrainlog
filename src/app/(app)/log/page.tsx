@@ -11,7 +11,9 @@ import { MedicationStepContent } from "@/components/log/medication-step-content"
 import { createEpisode } from "@/lib/actions/episode-actions";
 import { createClient } from "@/lib/supabase/client";
 import { Check, ChevronLeft } from "lucide-react";
-import type { PainLocation, TriggerType, SymptomType } from "@/lib/types/database";
+import { CyclePhaseSelector } from "@/components/log/cycle-phase-selector";
+import { useUserGender } from "@/hooks/use-user-gender";
+import type { PainLocation, TriggerType, SymptomType, MenstrualPhase, OvulationPhase } from "@/lib/types/database";
 import type { UserMedication } from "@/lib/types/episode";
 
 export default function LogPage() {
@@ -25,6 +27,9 @@ export default function LogPage() {
   const [episodeId, setEpisodeId] = useState<string | null>(null);
   const [userMeds, setUserMeds] = useState<UserMedication[]>([]);
   const [selectedMeds, setSelectedMeds] = useState<{ id: string; name: string; dose: string }[]>([]);
+  const gender = useUserGender();
+  const [menstrualPhase, setMenstrualPhase] = useState<MenstrualPhase | null>(null);
+  const [ovulationPhase, setOvulationPhase] = useState<OvulationPhase | null>(null);
 
   const stepTitles = ["Where does it hurt?", "How intense?", "Triggers & Symptoms", "Medications"];
 
@@ -52,6 +57,8 @@ export default function LogPage() {
       triggers,
       symptoms,
       startedAt: new Date().toISOString(),
+      menstrualPhase,
+      ovulationPhase,
     });
     if (result.success) {
       const epId = result.episodeId ?? null;
@@ -80,6 +87,8 @@ export default function LogPage() {
     setEpisodeId(null);
     setUserMeds([]);
     setSelectedMeds([]);
+    setMenstrualPhase(null);
+    setOvulationPhase(null);
   }
 
   return (
@@ -118,12 +127,22 @@ export default function LogPage() {
         ) : step === 2 ? (
           <IntensitySlider value={intensity} onChange={setIntensity} />
         ) : step === 3 ? (
-          <TriggerSymptomGrid
-            selectedTriggers={triggers}
-            selectedSymptoms={symptoms}
-            onToggleTrigger={(t) => setTriggers(toggle(triggers, t))}
-            onToggleSymptom={(s) => setSymptoms(toggle(symptoms, s))}
-          />
+          <div className="space-y-6">
+            <TriggerSymptomGrid
+              selectedTriggers={triggers}
+              selectedSymptoms={symptoms}
+              onToggleTrigger={(t) => setTriggers(toggle(triggers, t))}
+              onToggleSymptom={(s) => setSymptoms(toggle(symptoms, s))}
+            />
+            {gender === "female" && (
+              <CyclePhaseSelector
+                menstrualPhase={menstrualPhase}
+                ovulationPhase={ovulationPhase}
+                onMenstrualChange={setMenstrualPhase}
+                onOvulationChange={setOvulationPhase}
+              />
+            )}
+          </div>
         ) : (
           <MedicationStepContent
             userMeds={userMeds}

@@ -33,6 +33,8 @@ export async function getEpisodesInRange(from: string, to: string): Promise<Epis
     endedAt: ep.ended_at,
     intensity: ep.intensity,
     notes: ep.notes,
+    menstrualPhase: ep.menstrual_phase,
+    ovulationPhase: ep.ovulation_phase,
     createdAt: ep.created_at,
     locations: (locRes.data ?? [])
       .filter((l) => l.episode_id === ep.id)

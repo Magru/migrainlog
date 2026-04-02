@@ -11,7 +11,9 @@ import { StepIndicator } from "./step-indicator";
 import { MedicationStepContent } from "./medication-step-content";
 import { createEpisode } from "@/lib/actions/episode-actions";
 import { createClient } from "@/lib/supabase/client";
-import type { PainLocation, TriggerType, SymptomType } from "@/lib/types/database";
+import { CyclePhaseSelector } from "./cycle-phase-selector";
+import { useUserGender } from "@/hooks/use-user-gender";
+import type { PainLocation, TriggerType, SymptomType, MenstrualPhase, OvulationPhase } from "@/lib/types/database";
 import type { UserMedication } from "@/lib/types/episode";
 
 interface LogBottomSheetProps {
@@ -34,6 +36,9 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
   const [done, setDone] = useState(false);
   const [userMeds, setUserMeds] = useState<UserMedication[]>([]);
   const [selectedMeds, setSelectedMeds] = useState<{ id: string; name: string; dose: string }[]>([]);
+  const gender = useUserGender(open);
+  const [menstrualPhase, setMenstrualPhase] = useState<MenstrualPhase | null>(null);
+  const [ovulationPhase, setOvulationPhase] = useState<OvulationPhase | null>(null);
   const [dateMode, setDateMode] = useState<"now" | "custom">(initialDate ? "custom" : "now");
   const [customDate, setCustomDate] = useState(() => {
     if (initialDate) return initialDate;
@@ -93,6 +98,8 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
       triggers,
       symptoms,
       startedAt,
+      menstrualPhase,
+      ovulationPhase,
     });
 
     if (result.success) {
@@ -125,6 +132,8 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
     setDateMode(initialDate ? "custom" : "now");
     setUserMeds([]);
     setSelectedMeds([]);
+    setMenstrualPhase(null);
+    setOvulationPhase(null);
     onClose();
   }
 
@@ -254,6 +263,14 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
                     onToggleTrigger={toggleTrigger}
                     onToggleSymptom={toggleSymptom}
                   />
+                  {gender === "female" && (
+                    <CyclePhaseSelector
+                      menstrualPhase={menstrualPhase}
+                      ovulationPhase={ovulationPhase}
+                      onMenstrualChange={setMenstrualPhase}
+                      onOvulationChange={setOvulationPhase}
+                    />
+                  )}
                 </div>
               ) : (
                 <MedicationStepContent

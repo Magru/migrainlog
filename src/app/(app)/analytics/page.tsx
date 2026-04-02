@@ -7,6 +7,7 @@ import { SummaryStats } from "@/components/analytics/summary-stats";
 import { FrequencyChart } from "@/components/analytics/frequency-chart";
 import { SeverityDonut } from "@/components/analytics/severity-donut";
 import { TriggerBars } from "@/components/analytics/trigger-bars";
+import { CyclePhaseBars } from "@/components/analytics/cycle-phase-bars";
 import { LocationSummary } from "@/components/analytics/location-summary";
 import type { PainLocation } from "@/lib/types/database";
 
@@ -16,6 +17,7 @@ interface AnalyticsData {
   triggers: { trigger: string; count: number }[];
   locations: { location: PainLocation; count: number; opacity: number }[];
   summary: { totalEpisodes: number; avgIntensity: number; maxIntensity: number; episodesPerWeek: number };
+  cyclePhases: { menstrual: { phase: string; count: number }[]; ovulation: { phase: string; count: number }[]; total: number };
 }
 
 const emptyData: AnalyticsData = {
@@ -24,6 +26,7 @@ const emptyData: AnalyticsData = {
   triggers: [],
   locations: [],
   summary: { totalEpisodes: 0, avgIntensity: 0, maxIntensity: 0, episodesPerWeek: 0 },
+  cyclePhases: { menstrual: [], ovulation: [], total: 0 },
 };
 
 export default function AnalyticsPage() {
@@ -75,6 +78,9 @@ export default function AnalyticsPage() {
               <LocationSummary data={data.locations} />
             </div>
             <TriggerBars data={data.triggers} />
+            {data.cyclePhases.total > 0 && (
+              <CyclePhaseBars data={data.cyclePhases} />
+            )}
           </>
         )}
       </div>

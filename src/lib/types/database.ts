@@ -38,6 +38,9 @@ export type SymptomType =
 
 export type Gender = "male" | "female";
 
+export type MenstrualPhase = "before" | "during" | "after" | "not_applicable";
+export type OvulationPhase = "before" | "during" | "after" | "not_applicable";
+
 export type MedicationEffectiveness = "none" | "partial" | "full";
 
 export type SeverityLevel = "mild" | "moderate" | "severe";
@@ -81,6 +84,8 @@ export type Database = {
           ended_at: string | null;
           intensity: number | null;
           notes: string | null;
+          menstrual_phase: MenstrualPhase | null;
+          ovulation_phase: OvulationPhase | null;
           created_at: string;
           updated_at: string;
         };
@@ -91,12 +96,16 @@ export type Database = {
           ended_at?: string | null;
           intensity?: number | null;
           notes?: string | null;
+          menstrual_phase?: MenstrualPhase | null;
+          ovulation_phase?: OvulationPhase | null;
         };
         Update: {
           started_at?: string;
           ended_at?: string | null;
           intensity?: number | null;
           notes?: string | null;
+          menstrual_phase?: MenstrualPhase | null;
+          ovulation_phase?: OvulationPhase | null;
           updated_at?: string;
         };
         Relationships: [

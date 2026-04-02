@@ -2,27 +2,22 @@
 
 import { useEffect } from "react";
 
-/** Hides the splash screen after hydration, then removes it from DOM */
+/** Hides the splash screen after hydration (kept in DOM to avoid React reconciliation crash) */
 export function SplashHide() {
   useEffect(() => {
     const splash = document.getElementById("splash");
     if (!splash) return;
 
-    // Fade out after short delay
+    // Fade out after short delay — do NOT remove from DOM,
+    // React needs the node as a sibling reference for insertBefore
     const fadeTimer = setTimeout(() => {
       splash.style.opacity = "0";
       splash.style.visibility = "hidden";
       splash.style.pointerEvents = "none";
     }, 400);
 
-    // Remove from DOM after fade completes
-    const removeTimer = setTimeout(() => {
-      splash.remove();
-    }, 900);
-
     return () => {
       clearTimeout(fadeTimer);
-      clearTimeout(removeTimer);
     };
   }, []);
 

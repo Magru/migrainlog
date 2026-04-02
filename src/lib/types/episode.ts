@@ -1,4 +1,4 @@
-import type { PainLocation, TriggerType, SymptomType, MedicationEffectiveness } from "./database";
+import type { PainLocation, TriggerType, SymptomType, MedicationEffectiveness, MenstrualPhase, OvulationPhase } from "./database";
 
 /** Data collected during the 3-step quick-log flow */
 export interface EpisodeFormData {
@@ -8,6 +8,8 @@ export interface EpisodeFormData {
   symptoms: SymptomType[];
   startedAt: string; // ISO string, defaults to "now"
   notes?: string;
+  menstrualPhase?: MenstrualPhase | null;
+  ovulationPhase?: OvulationPhase | null;
 }
 
 /** Medication logged for an episode */
@@ -36,6 +38,8 @@ export interface EpisodeWithDetails {
   endedAt: string | null;
   intensity: number | null;
   notes: string | null;
+  menstrualPhase: MenstrualPhase | null;
+  ovulationPhase: OvulationPhase | null;
   createdAt: string;
   locations: PainLocation[];
   triggers: TriggerType[];
