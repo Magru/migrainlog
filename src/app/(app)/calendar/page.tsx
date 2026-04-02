@@ -66,6 +66,7 @@ export default function CalendarPage() {
         date={selectedDate}
         episodes={selectedDate ? (episodesByDay[selectedDate] ?? []) : []}
         onClose={() => setSelectedDate(null)}
+        onRefresh={fetchMonth}
       />
     </PageTransition>
   );

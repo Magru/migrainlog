@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { X, Plus } from "lucide-react";
+import { X, Plus, Pencil, Trash2 } from "lucide-react";
 import { getSeverityLevel } from "@/lib/types/database";
 import { formatDuration } from "@/lib/utils/date-helpers";
 import { MedicationRatingForm } from "./medication-rating-form";
 import { EpisodeMedicationAdder } from "./episode-medication-adder";
+import { EditEpisodeSheet } from "./edit-episode-sheet";
+import { DeleteEpisodeConfirm } from "./delete-episode-confirm";
 import { LogBottomSheet } from "@/components/log/log-bottom-sheet";
 import type { EpisodeWithDetails } from "@/lib/types/episode";
 
@@ -14,6 +16,7 @@ interface DayDetailSheetProps {
   date: string | null;
   episodes: EpisodeWithDetails[];
   onClose: () => void;
+  onRefresh: () => void;
 }
 
 const severityDot: Record<string, string> = {
@@ -27,9 +30,11 @@ const triggerLabels: Record<string, string> = {
   hormones: "Hormones", screen: "Screen", alcohol: "Alcohol", caffeine: "Caffeine",
 };
 
-export function DayDetailSheet({ date, episodes, onClose }: DayDetailSheetProps) {
+export function DayDetailSheet({ date, episodes, onClose, onRefresh }: DayDetailSheetProps) {
   const shouldReduce = useReducedMotion();
   const [logOpen, setLogOpen] = useState(false);
+  const [editingEpisode, setEditingEpisode] = useState<EpisodeWithDetails | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   return (
     <>
@@ -99,6 +104,22 @@ export function DayDetailSheet({ date, episodes, onClose }: DayDetailSheetProps)
                         <span className="text-xs text-text-secondary">
                           {formatDuration(ep.startedAt, ep.endedAt)}
                         </span>
+                        <span className="ml-auto flex gap-1">
+                          <button
+                            onClick={() => setEditingEpisode(ep)}
+                            className="flex h-7 w-7 items-center justify-center rounded-full text-text-secondary hover:bg-bg-elevated"
+                            aria-label="Edit episode"
+                          >
+                            <Pencil size={14} />
+                          </button>
+                          <button
+                            onClick={() => setConfirmDeleteId(ep.id)}
+                            className="flex h-7 w-7 items-center justify-center rounded-full text-red-400 hover:bg-red-400/10"
+                            aria-label="Delete episode"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </span>
                       </div>
                       {ep.triggers.length > 0 && (
                         <div className="flex flex-wrap gap-1">
@@ -137,6 +158,27 @@ export function DayDetailSheet({ date, episodes, onClose }: DayDetailSheetProps)
           initialDate={date}
         />
       )}
+
+      {/* Edit episode sheet */}
+      {editingEpisode && (
+        <EditEpisodeSheet
+          episode={editingEpisode}
+          onClose={() => setEditingEpisode(null)}
+          onSaved={() => {
+            setEditingEpisode(null);
+            onRefresh();
+          }}
+        />
+      )}
+
+      <DeleteEpisodeConfirm
+        episodeId={confirmDeleteId}
+        onCancel={() => setConfirmDeleteId(null)}
+        onDeleted={() => {
+          setConfirmDeleteId(null);
+          onRefresh();
+        }}
+      />
     </>
   );
 }
