@@ -1,7 +1,6 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
 import type { Gender } from "@/lib/types/database";
 
 const VALID_GENDERS: (Gender | null)[] = ["male", "female", null];
@@ -23,6 +22,5 @@ export async function updateGender(gender: Gender | null) {
 
   if (error) return { error: "Failed to update gender" };
 
-  revalidatePath("/profile");
   return { success: true };
 }
