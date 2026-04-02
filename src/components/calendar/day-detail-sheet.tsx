@@ -154,7 +154,10 @@ export function DayDetailSheet({ date, episodes, onClose, onRefresh }: DayDetail
       {date && (
         <LogBottomSheet
           open={logOpen}
-          onClose={() => setLogOpen(false)}
+          onClose={() => {
+            setLogOpen(false);
+            onRefresh();
+          }}
           initialDate={date}
         />
       )}
