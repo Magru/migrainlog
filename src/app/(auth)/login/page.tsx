@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { signInWithEmail, signInWithPassword, signUp } from "@/lib/actions/auth-actions";
@@ -8,6 +9,7 @@ import { signInWithEmail, signInWithPassword, signUp } from "@/lib/actions/auth-
 type AuthMode = "magic-link" | "password" | "signup";
 
 export default function LoginPage() {
+  const t = useTranslations("auth");
   const [mode, setMode] = useState<AuthMode>("magic-link");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,20 +31,20 @@ export default function LoginPage() {
       if (mode === "magic-link") {
         const result = await signInWithEmail(formData);
         if (result.error) setError(result.error);
-        else setMessage("Check your email for the login link!");
+        else setMessage(t("checkEmailLogin"));
       } else if (mode === "password") {
         const result = await signInWithPassword(formData);
         if (result?.error) setError(result.error);
       } else {
         const result = await signUp(formData);
         if (result.error) setError(result.error);
-        else setMessage("Check your email to confirm your account!");
+        else setMessage(t("checkEmailConfirm"));
       }
     } catch (err: unknown) {
       // Next.js redirect() throws NEXT_REDIRECT — not an actual error
       const msg = err instanceof Error ? err.message : "";
       if (msg.includes("NEXT_REDIRECT")) return;
-      setError("Something went wrong. Please try again.");
+      setError(t("somethingWentWrong"));
     } finally {
       setLoading(false);
     }
@@ -53,17 +55,17 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm border-border bg-bg-surface">
         <CardHeader className="text-center space-y-2">
           <h1 className="font-heading text-2xl font-extrabold text-text-primary">
-            MigrainLog
+            {t("appName")}
           </h1>
           <p className="text-sm text-text-secondary">
-            Track your migraines, find your patterns
+            {t("tagline")}
           </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="text-sm font-medium text-text-primary">
-                Email
+                {t("email")}
               </label>
               <input
                 id="email"
@@ -79,7 +81,7 @@ export default function LoginPage() {
             {mode !== "magic-link" && (
               <div>
                 <label htmlFor="password" className="text-sm font-medium text-text-primary">
-                  Password
+                  {t("password")}
                 </label>
                 <input
                   id="password"
@@ -107,12 +109,12 @@ export default function LoginPage() {
               className="w-full h-14 rounded-full bg-accent text-white font-medium text-base"
             >
               {loading
-                ? "Loading..."
+                ? t("signIn") + "..."
                 : mode === "magic-link"
-                  ? "Send Magic Link"
+                  ? t("sendMagicLink")
                   : mode === "signup"
-                    ? "Create Account"
-                    : "Sign In"}
+                    ? t("createAccount")
+                    : t("signIn")}
             </Button>
           </form>
 
@@ -120,31 +122,31 @@ export default function LoginPage() {
             {mode === "magic-link" ? (
               <>
                 <button onClick={() => setMode("password")} className="underline hover:text-text-primary">
-                  Sign in with password
+                  {t("signInWithPassword")}
                 </button>
                 <span className="mx-2">·</span>
                 <button onClick={() => setMode("signup")} className="underline hover:text-text-primary">
-                  Create account
+                  {t("createAccount")}
                 </button>
               </>
             ) : mode === "password" ? (
               <>
                 <button onClick={() => setMode("magic-link")} className="underline hover:text-text-primary">
-                  Use magic link
+                  {t("useMagicLink")}
                 </button>
                 <span className="mx-2">·</span>
                 <button onClick={() => setMode("signup")} className="underline hover:text-text-primary">
-                  Create account
+                  {t("createAccount")}
                 </button>
               </>
             ) : (
               <>
                 <button onClick={() => setMode("magic-link")} className="underline hover:text-text-primary">
-                  Use magic link
+                  {t("useMagicLink")}
                 </button>
                 <span className="mx-2">·</span>
                 <button onClick={() => setMode("password")} className="underline hover:text-text-primary">
-                  Sign in with password
+                  {t("signInWithPassword")}
                 </button>
               </>
             )}

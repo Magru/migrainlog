@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,8 @@ interface EditEpisodeSheetProps {
 
 export function EditEpisodeSheet({ episode, onClose, onSaved }: EditEpisodeSheetProps) {
   const shouldReduce = useReducedMotion();
+  const t = useTranslations("calendar");
+  const tc = useTranslations("common");
   const gender = useUserGender(true);
   const [locations, setLocations] = useState<PainLocation[]>(episode.locations);
   const [intensity, setIntensity] = useState(episode.intensity ?? 5);
@@ -106,11 +109,11 @@ export function EditEpisodeSheet({ episode, onClose, onSaved }: EditEpisodeSheet
         {/* Header */}
         <div className="flex items-center justify-between px-4 pb-2">
           <div className="w-10" />
-          <h2 className="font-heading text-lg font-bold">Edit Episode</h2>
+          <h2 className="font-heading text-lg font-bold">{t("editEpisode")}</h2>
           <button
             onClick={onClose}
             className="flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-bg-surface"
-            aria-label="Close"
+            aria-label={tc("close")}
           >
             <X size={20} />
           </button>
@@ -123,7 +126,7 @@ export function EditEpisodeSheet({ episode, onClose, onSaved }: EditEpisodeSheet
         >
           {/* Date/time */}
           <div className="space-y-2">
-            <p className="text-xs font-medium text-text-secondary">When did it start?</p>
+            <p className="text-xs font-medium text-text-secondary">{t("whenDidItStart")}</p>
             <div className="flex gap-2">
               <input
                 type="date"
@@ -142,13 +145,13 @@ export function EditEpisodeSheet({ episode, onClose, onSaved }: EditEpisodeSheet
 
           {/* Pain locations */}
           <div className="space-y-2">
-            <p className="text-xs font-medium text-text-secondary">Pain locations</p>
+            <p className="text-xs font-medium text-text-secondary">{t("painLocations")}</p>
             <HeadPainMap selected={locations} onToggle={toggleLocation} />
           </div>
 
           {/* Intensity */}
           <div className="space-y-2">
-            <p className="text-xs font-medium text-text-secondary">Intensity</p>
+            <p className="text-xs font-medium text-text-secondary">{t("intensity")}</p>
             <IntensitySlider value={intensity} onChange={setIntensity} />
           </div>
 
@@ -178,7 +181,7 @@ export function EditEpisodeSheet({ episode, onClose, onSaved }: EditEpisodeSheet
             disabled={saving || locations.length === 0}
             className="h-14 w-full rounded-full bg-accent text-base font-medium text-white"
           >
-            {saving ? "Saving..." : "Save Changes"}
+            {saving ? tc("saving") : t("saveChanges")}
           </Button>
         </div>
       </motion.div>

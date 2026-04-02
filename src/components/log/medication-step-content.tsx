@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Pill, Check, X } from "lucide-react";
 import type { UserMedication } from "@/lib/types/episode";
@@ -18,6 +19,8 @@ interface MedicationStepContentProps {
 }
 
 export function MedicationStepContent({ userMeds, selectedMeds, onSelect }: MedicationStepContentProps) {
+  const t = useTranslations("log");
+  const tc = useTranslations("common");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [dose, setDose] = useState("");
 
@@ -37,9 +40,9 @@ export function MedicationStepContent({ userMeds, selectedMeds, onSelect }: Medi
     return (
       <div className="flex flex-col items-center gap-3 py-8 text-center">
         <Pill size={32} className="text-text-secondary" />
-        <p className="text-sm text-text-secondary">No medications in your library yet.</p>
-        <Link href="/profile" className="text-sm text-accent underline">Add in Profile → My Medications</Link>
-        <p className="text-xs text-text-secondary">You can skip this step</p>
+        <p className="text-sm text-text-secondary">{t("noMedsYet")}</p>
+        <Link href="/profile" className="text-sm text-accent underline">{t("addInProfile")}</Link>
+        <p className="text-xs text-text-secondary">{t("skipStep")}</p>
       </div>
     );
   }
@@ -77,7 +80,7 @@ export function MedicationStepContent({ userMeds, selectedMeds, onSelect }: Medi
                   <span className="text-sm font-medium">{med.name}</span>
                   <input
                     type="text"
-                    placeholder="Dose"
+                    placeholder={t("dose")}
                     value={dose}
                     onChange={(e) => setDose(e.target.value)}
                     className="w-20 rounded-[var(--radius-sm)] bg-bg-elevated px-2 py-1 text-xs outline-none placeholder:text-text-secondary"
@@ -87,7 +90,7 @@ export function MedicationStepContent({ userMeds, selectedMeds, onSelect }: Medi
                     onClick={() => handleAdd(med)}
                     className="rounded-full bg-accent px-3 py-1 text-xs font-medium text-white"
                   >
-                    Add
+                    {tc("add")}
                   </button>
                 </div>
               ) : (
@@ -104,7 +107,7 @@ export function MedicationStepContent({ userMeds, selectedMeds, onSelect }: Medi
       </div>
 
       {selectedMeds.length === 0 && (
-        <p className="text-center text-xs text-text-secondary">Tap a medication to add it, or skip to save</p>
+        <p className="text-center text-xs text-text-secondary">{t("tapMedToAdd")}</p>
       )}
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { PageTransition } from "@/components/layout/page-transition";
 import { PeriodSelector, type PeriodKey } from "@/components/analytics/period-selector";
 import { SummaryStats } from "@/components/analytics/summary-stats";
@@ -30,6 +31,7 @@ const emptyData: AnalyticsData = {
 };
 
 export default function AnalyticsPage() {
+  const t = useTranslations("analytics");
   const [period, setPeriod] = useState<PeriodKey>("month");
   const [from, setFrom] = useState(() => new Date(Date.now() - 30 * 86400000).toISOString());
   const [to, setTo] = useState(() => new Date().toISOString());
@@ -61,7 +63,7 @@ export default function AnalyticsPage() {
   return (
     <PageTransition>
       <div className="space-y-4 py-6">
-        <h1 className="font-heading text-[28px] font-extrabold">Analytics</h1>
+        <h1 className="font-heading text-[28px] font-extrabold">{t("title")}</h1>
 
         <PeriodSelector value={period} onChange={handlePeriodChange} />
 

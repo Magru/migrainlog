@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, ChevronLeft, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,10 +24,12 @@ interface LogBottomSheetProps {
   initialDate?: string;
 }
 
-const stepTitles = ["Where does it hurt?", "How intense?", "Triggers & Symptoms", "Medications"];
+const stepKeys = ["step1", "step2", "step3", "step4"] as const;
 
 export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetProps) {
   const shouldReduce = useReducedMotion();
+  const t = useTranslations("log");
+  const tc = useTranslations("common");
   const [step, setStep] = useState(1);
   const [locations, setLocations] = useState<PainLocation[]>([]);
   const [intensity, setIntensity] = useState(5);
@@ -175,7 +178,7 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
                 <button
                   onClick={() => setStep((s) => s - 1)}
                   className="flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-bg-surface"
-                  aria-label="Previous step"
+                  aria-label={t("previousStep")}
                 >
                   <ChevronLeft size={20} />
                 </button>
@@ -184,13 +187,13 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
               )}
 
               <h2 className="font-heading text-lg font-bold">
-                {done ? "Saved!" : stepTitles[step - 1]}
+                {done ? t("saved") : t(stepKeys[step - 1])}
               </h2>
 
               <button
                 onClick={resetAndClose}
                 className="flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-bg-surface"
-                aria-label="Close"
+                aria-label={tc("close")}
               >
                 <X size={20} />
               </button>
@@ -205,7 +208,7 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-mint/20">
                     <Check size={32} className="text-accent-mint" />
                   </div>
-                  <p className="text-text-secondary">Episode logged</p>
+                  <p className="text-text-secondary">{t("episodeLogged")}</p>
                 </div>
               ) : step === 1 ? (
                 <HeadPainMap selected={locations} onToggle={toggleLocation} />
@@ -215,7 +218,7 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
                 <div className="space-y-4">
                   {/* Date/time selector */}
                   <div className="space-y-2">
-                    <p className="text-xs font-medium text-text-secondary">When did it start?</p>
+                    <p className="text-xs font-medium text-text-secondary">{t("whenDidItStart")}</p>
                     <div className="flex gap-2">
                       <button
                         onClick={() => setDateMode("now")}
@@ -225,7 +228,7 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
                             : "border-border text-text-secondary"
                         }`}
                       >
-                        Now
+                        {t("now")}
                       </button>
                       <button
                         onClick={() => setDateMode("custom")}
@@ -235,7 +238,7 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
                             : "border-border text-text-secondary"
                         }`}
                       >
-                        Other date
+                        {t("otherDate")}
                       </button>
                     </div>
                     {dateMode === "custom" && (
@@ -294,7 +297,7 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
                     disabled={step === 1 && locations.length === 0}
                     className="h-14 w-full rounded-full bg-accent text-base font-medium text-white"
                   >
-                    Next
+                    {tc("next")}
                   </Button>
                 ) : (
                   <Button
@@ -302,7 +305,7 @@ export function LogBottomSheet({ open, onClose, initialDate }: LogBottomSheetPro
                     disabled={saving}
                     className="h-14 w-full rounded-full bg-accent text-base font-medium text-white"
                   >
-                    {saving ? "Saving..." : "Save Episode"}
+                    {saving ? tc("saving") : t("saveEpisode")}
                   </Button>
                 )}
               </div>

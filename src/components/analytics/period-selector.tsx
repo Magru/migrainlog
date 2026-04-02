@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export type PeriodKey = "week" | "month" | "3months" | "custom";
 
@@ -27,6 +28,7 @@ function daysAgo(n: number): [string, string] {
 }
 
 export function PeriodSelector({ value, onChange }: PeriodSelectorProps) {
+  const t = useTranslations("analytics");
   const [showCustom, setShowCustom] = useState(false);
   const [customFrom, setCustomFrom] = useState(toISODate(new Date(Date.now() - 30 * 86400000)));
   const [customTo, setCustomTo] = useState(toISODate(new Date()));
@@ -74,7 +76,7 @@ export function PeriodSelector({ value, onChange }: PeriodSelectorProps) {
               : "text-text-secondary hover:text-text-primary"
           }`}
         >
-          Custom
+          {t("custom")}
         </button>
       </div>
 

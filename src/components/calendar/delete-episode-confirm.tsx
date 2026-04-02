@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { deleteEpisode } from "@/lib/actions/episode-actions";
 
@@ -11,6 +12,8 @@ interface DeleteEpisodeConfirmProps {
 }
 
 export function DeleteEpisodeConfirm({ episodeId, onCancel, onDeleted }: DeleteEpisodeConfirmProps) {
+  const t = useTranslations("calendar");
+  const tc = useTranslations("common");
   const [deleting, setDeleting] = useState(false);
 
   async function handleDelete() {
@@ -41,21 +44,21 @@ export function DeleteEpisodeConfirm({ episodeId, onCancel, onDeleted }: DeleteE
             transition={{ duration: 0.25, ease: "easeOut" }}
             style={{ paddingBottom: "calc(24px + env(safe-area-inset-bottom))" }}
           >
-            <p className="mb-4 text-center font-medium">Delete this episode?</p>
-            <p className="mb-6 text-center text-sm text-text-secondary">This action cannot be undone.</p>
+            <p className="mb-4 text-center font-medium">{t("deleteTitle")}</p>
+            <p className="mb-6 text-center text-sm text-text-secondary">{t("deleteMessage")}</p>
             <div className="flex gap-3">
               <button
                 onClick={onCancel}
                 className="h-12 flex-1 rounded-full border border-border text-sm font-medium"
               >
-                Cancel
+                {tc("cancel")}
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
                 className="h-12 flex-1 rounded-full bg-red-500 text-sm font-medium text-white"
               >
-                {deleting ? "Deleting..." : "Delete"}
+                {deleting ? tc("deleting") : tc("delete")}
               </button>
             </div>
           </motion.div>

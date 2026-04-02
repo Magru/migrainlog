@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Pill } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { rateEpisodeMedication } from "@/lib/actions/medication-actions";
@@ -11,13 +12,15 @@ interface MedicationRatingFormProps {
   medication: EpisodeMedication;
 }
 
-const effectivenessOptions: { value: MedicationEffectiveness; label: string }[] = [
-  { value: "none", label: "No relief" },
-  { value: "partial", label: "Partial" },
-  { value: "full", label: "Full relief" },
+const effectivenessKeys: { value: MedicationEffectiveness; key: string }[] = [
+  { value: "none", key: "noRelief" },
+  { value: "partial", key: "partial" },
+  { value: "full", key: "fullRelief" },
 ];
 
 export function MedicationRatingForm({ medication }: MedicationRatingFormProps) {
+  const tMed = useTranslations("medications");
+  const tc = useTranslations("common");
   const isRated = medication.reliefMinutes != null && medication.effectiveness != null;
   const [expanded, setExpanded] = useState(false);
   const [relief, setRelief] = useState(medication.reliefMinutes ?? 30);
@@ -43,7 +46,8 @@ export function MedicationRatingForm({ medication }: MedicationRatingFormProps) 
 
   // Compact rated display
   if (saved && !expanded) {
-    const effLabel = effectivenessOptions.find((o) => o.value === (effectiveness ?? medication.effectiveness))?.label;
+    const effKey = effectivenessKeys.find((o) => o.value === (effectiveness ?? medication.effectiveness))?.key;
+    const effLabel = effKey ? tMed(effKey) : "";
     return (
       <div className="flex items-center gap-2 rounded-[var(--radius-sm)] bg-accent/5 p-2 text-sm">
         <Pill size={14} className="shrink-0 text-accent" />
@@ -70,7 +74,7 @@ export function MedicationRatingForm({ medication }: MedicationRatingFormProps) 
           onClick={() => setExpanded(true)}
           className="rounded-full bg-accent/15 px-2.5 py-0.5 text-xs font-medium text-accent"
         >
-          Rate
+          {tMed("rate")}
         </button>
       </div>
     );
@@ -88,8 +92,8 @@ export function MedicationRatingForm({ medication }: MedicationRatingFormProps) 
       {/* Relief time slider */}
       <div className="space-y-1">
         <div className="flex items-center justify-between text-xs text-text-secondary">
-          <span>Time to relief</span>
-          <span className="font-medium text-text-primary">{relief}мин</span>
+          <span>{tMed("timeToRelief")}</span>
+          <span className="font-medium text-text-primary">{tMed("minutes", { value: relief })}</span>
         </div>
         <input
           type="range"
@@ -101,14 +105,14 @@ export function MedicationRatingForm({ medication }: MedicationRatingFormProps) 
           className="w-full accent-accent"
         />
         <div className="flex justify-between text-[10px] text-text-secondary">
-          <span>0мин</span>
-          <span>3ч</span>
+          <span>{tMed("zeroMinutes")}</span>
+          <span>{tMed("threeHours")}</span>
         </div>
       </div>
 
       {/* Effectiveness buttons */}
       <div className="flex gap-2">
-        {effectivenessOptions.map((opt) => (
+        {effectivenessKeys.map((opt) => (
           <button
             key={opt.value}
             onClick={() => setEffectiveness(opt.value)}
@@ -118,7 +122,7 @@ export function MedicationRatingForm({ medication }: MedicationRatingFormProps) 
                 : "border-border bg-bg-surface text-text-secondary hover:border-accent/30"
             }`}
           >
-            {opt.label}
+            {tMed(opt.key)}
           </button>
         ))}
       </div>
@@ -130,7 +134,7 @@ export function MedicationRatingForm({ medication }: MedicationRatingFormProps) 
         size="sm"
         className="w-full rounded-full bg-accent text-xs font-medium text-white"
       >
-        {isPending ? "Saving..." : "Save Rating"}
+        {isPending ? tc("saving") : tMed("saveRating")}
       </Button>
     </div>
   );

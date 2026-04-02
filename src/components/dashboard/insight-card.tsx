@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { Lightbulb } from "lucide-react";
 
 interface InsightCardProps {
@@ -6,28 +9,20 @@ interface InsightCardProps {
   avgIntensity: number;
 }
 
-const triggerLabels: Record<string, string> = {
-  stress: "Stress",
-  sleep: "Sleep",
-  food: "Food",
-  weather: "Weather",
-  hormones: "Hormones",
-  screen: "Screen",
-  alcohol: "Alcohol",
-  caffeine: "Caffeine",
-};
-
 export function InsightCard({ totalEpisodes, topTrigger, avgIntensity }: InsightCardProps) {
+  const t = useTranslations("dashboard");
+  const tTriggers = useTranslations("triggers");
+
   let insight: string;
 
   if (totalEpisodes === 0) {
-    insight = "No episodes logged this month. Start tracking to discover patterns.";
+    insight = t("insightNone");
   } else if (totalEpisodes <= 2) {
-    insight = `${totalEpisodes} episode${totalEpisodes > 1 ? "s" : ""} this month. Keep logging to build a useful picture.`;
+    insight = t("insightFew", { count: totalEpisodes });
   } else {
-    const parts: string[] = [`${totalEpisodes} episodes this month`];
-    if (topTrigger) parts.push(`most often linked to ${triggerLabels[topTrigger]?.toLowerCase() ?? topTrigger}`);
-    if (avgIntensity > 6) parts.push("average intensity is high — consider discussing with your doctor");
+    const parts: string[] = [t("insightMany", { count: totalEpisodes })];
+    if (topTrigger) parts.push(t("insightTrigger", { trigger: tTriggers(topTrigger).toLowerCase() }));
+    if (avgIntensity > 6) parts.push(t("insightHighIntensity"));
     insight = parts.join(", ") + ".";
   }
 

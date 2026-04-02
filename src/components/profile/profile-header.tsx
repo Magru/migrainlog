@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { updateGender } from "@/lib/actions/profile-actions";
 import type { Gender } from "@/lib/types/database";
 
@@ -11,12 +12,14 @@ interface ProfileHeaderProps {
   gender: Gender | null;
 }
 
-const genderOptions: { value: Gender; label: string; icon: string }[] = [
-  { value: "male", label: "Male", icon: "♂" },
-  { value: "female", label: "Female", icon: "♀" },
+const genderKeys: { value: Gender; key: string; icon: string }[] = [
+  { value: "male", key: "male", icon: "♂" },
+  { value: "female", key: "female", icon: "♀" },
 ];
 
 export function ProfileHeader({ displayName, email, createdAt, gender }: ProfileHeaderProps) {
+  const t = useTranslations("profile");
+  const locale = useLocale();
   const [selected, setSelected] = useState<Gender | null>(gender);
   const [isPending, startTransition] = useTransition();
 
@@ -26,7 +29,7 @@ export function ProfileHeader({ displayName, email, createdAt, gender }: Profile
     .map((s) => s[0]?.toUpperCase() ?? "")
     .join("");
 
-  const memberSince = new Date(createdAt).toLocaleDateString("en", {
+  const memberSince = new Date(createdAt).toLocaleDateString(locale, {
     month: "long",
     year: "numeric",
   });
@@ -53,14 +56,14 @@ export function ProfileHeader({ displayName, email, createdAt, gender }: Profile
         </div>
         <div>
           <h2 className="font-heading text-lg font-bold">{displayName ?? email}</h2>
-          <p className="text-sm text-text-secondary">Member since {memberSince}</p>
+          <p className="text-sm text-text-secondary">{t("memberSince", { date: memberSince })}</p>
         </div>
       </div>
 
       <div>
-        <p className="mb-2 text-sm font-medium text-text-secondary">Gender</p>
+        <p className="mb-2 text-sm font-medium text-text-secondary">{t("gender")}</p>
         <div className="grid grid-cols-2 gap-2">
-          {genderOptions.map((opt) => {
+          {genderKeys.map((opt) => {
             const isSelected = selected === opt.value;
             return (
               <button
@@ -76,7 +79,7 @@ export function ProfileHeader({ displayName, email, createdAt, gender }: Profile
                 }`}
               >
                 <span>{opt.icon}</span>
-                <span>{opt.label}</span>
+                <span>{t(opt.key)}</span>
               </button>
             );
           })}

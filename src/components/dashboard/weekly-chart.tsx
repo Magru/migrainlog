@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 
 interface WeeklyChartProps {
@@ -51,19 +52,20 @@ const LazyBarChart = dynamic(
 
 export function WeeklyChart({ data }: WeeklyChartProps) {
   const hasData = data.some((d) => d.count > 0);
+  const t = useTranslations("dashboard");
 
   if (!hasData) {
     return (
       <div className="rounded-[var(--radius-md)] border border-border bg-bg-surface p-4">
-        <h3 className="text-sm font-medium text-text-secondary">This Week</h3>
-        <p className="mt-4 text-center text-sm text-text-secondary">No episodes this week</p>
+        <h3 className="text-sm font-medium text-text-secondary">{t("thisWeek")}</h3>
+        <p className="mt-4 text-center text-sm text-text-secondary">{t("noEpisodesThisWeek")}</p>
       </div>
     );
   }
 
   return (
     <div className="rounded-[var(--radius-md)] border border-border bg-bg-surface p-4">
-      <h3 className="mb-4 text-sm font-medium text-text-secondary">This Week</h3>
+      <h3 className="mb-4 text-sm font-medium text-text-secondary">{t("thisWeek")}</h3>
       <LazyBarChart data={data} />
     </div>
   );

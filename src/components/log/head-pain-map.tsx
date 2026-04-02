@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import type { PainLocation } from "@/lib/types/database";
 
@@ -70,6 +71,8 @@ const backZones: Zone[] = [
 const allZones = [...frontZones, ...backZones];
 
 export function HeadPainMap({ selected, onToggle }: HeadPainMapProps) {
+  const t = useTranslations("log");
+  const tLoc = useTranslations("locations");
   const [view, setView] = useState<"front" | "back">("front");
 
   const zones = view === "front" ? frontZones : backZones;
@@ -85,7 +88,7 @@ export function HeadPainMap({ selected, onToggle }: HeadPainMapProps) {
             view === "front" ? "bg-accent text-white" : "text-text-secondary hover:text-text-primary"
           }`}
         >
-          Front
+          {t("front")}
         </button>
         <button
           onClick={() => setView("back")}
@@ -93,7 +96,7 @@ export function HeadPainMap({ selected, onToggle }: HeadPainMapProps) {
             view === "back" ? "bg-accent text-white" : "text-text-secondary hover:text-text-primary"
           }`}
         >
-          Back
+          {t("back")}
         </button>
       </div>
 
@@ -120,7 +123,7 @@ export function HeadPainMap({ selected, onToggle }: HeadPainMapProps) {
             <button
               key={zone.id}
               onClick={() => onToggle(zone.id)}
-              aria-label={zone.label}
+              aria-label={tLoc(zone.id)}
               aria-pressed={isSelected}
               className="absolute transition-all duration-200"
               style={{
@@ -148,7 +151,7 @@ export function HeadPainMap({ selected, onToggle }: HeadPainMapProps) {
             : "border-border text-text-secondary hover:border-text-secondary"
         }`}
       >
-        Full Head
+        {t("fullHead")}
       </button>
 
       {/* Selected zone labels */}
@@ -158,7 +161,7 @@ export function HeadPainMap({ selected, onToggle }: HeadPainMapProps) {
             const zone = allZones.find((z) => z.id === loc);
             return (
               <span key={loc} className="rounded-full bg-accent/15 px-2.5 py-0.5 text-xs text-accent">
-                {zone?.label ?? loc}
+                {tLoc(loc)}
               </span>
             );
           })}

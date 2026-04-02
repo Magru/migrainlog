@@ -9,7 +9,7 @@ export function toLocalDateStr(input: string | Date): string {
 }
 
 /** Format relative date like "2 hours ago", "Yesterday", etc. */
-export function relativeDate(iso: string): string {
+export function relativeDate(iso: string, locale = "en"): string {
   const date = new Date(iso);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
@@ -17,17 +17,18 @@ export function relativeDate(iso: string): string {
   const diffHours = Math.floor(diffMs / 3600000);
   const diffDays = Math.floor(diffMs / 86400000);
 
-  if (diffMins < 1) return "Just now";
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return date.toLocaleDateString("en", { month: "short", day: "numeric" });
+  const isRu = locale === "ru";
+  if (diffMins < 1) return isRu ? "Только что" : "Just now";
+  if (diffMins < 60) return isRu ? `${diffMins}м назад` : `${diffMins}m ago`;
+  if (diffHours < 24) return isRu ? `${diffHours}ч назад` : `${diffHours}h ago`;
+  if (diffDays === 1) return isRu ? "Вчера" : "Yesterday";
+  if (diffDays < 7) return isRu ? `${diffDays}д назад` : `${diffDays}d ago`;
+  return date.toLocaleDateString(locale, { month: "short", day: "numeric" });
 }
 
 /** Get month name + year */
-export function monthLabel(year: number, month: number): string {
-  return new Date(year, month).toLocaleDateString("en", {
+export function monthLabel(year: number, month: number, locale = "en"): string {
+  return new Date(year, month).toLocaleDateString(locale, {
     month: "long",
     year: "numeric",
   });
@@ -44,8 +45,8 @@ export function firstDayOfWeek(year: number, month: number): number {
 }
 
 /** Format duration between two ISO dates */
-export function formatDuration(start: string, end: string | null): string {
-  if (!end) return "Ongoing";
+export function formatDuration(start: string, end: string | null, locale = "en"): string {
+  if (!end) return locale === "ru" ? "Продолжается" : "Ongoing";
   const diffMs = new Date(end).getTime() - new Date(start).getTime();
   const hours = Math.floor(diffMs / 3600000);
   const mins = Math.floor((diffMs % 3600000) / 60000);

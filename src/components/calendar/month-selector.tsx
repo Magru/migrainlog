@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { monthLabel } from "@/lib/utils/date-helpers";
 
@@ -12,6 +13,8 @@ interface MonthSelectorProps {
 }
 
 export function MonthSelector({ year, month, onPrev, onNext, disableNext }: MonthSelectorProps) {
+  const locale = useLocale();
+
   return (
     <div className="flex items-center justify-between">
       <button
@@ -21,7 +24,7 @@ export function MonthSelector({ year, month, onPrev, onNext, disableNext }: Mont
       >
         <ChevronLeft size={20} />
       </button>
-      <h2 className="font-heading text-lg font-bold">{monthLabel(year, month)}</h2>
+      <h2 className="font-heading text-lg font-bold">{monthLabel(year, month, locale)}</h2>
       <button
         onClick={onNext}
         disabled={disableNext}

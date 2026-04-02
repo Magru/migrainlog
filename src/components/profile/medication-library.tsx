@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Pill, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addUserMedication, deactivateUserMedication } from "@/lib/actions/medication-actions";
@@ -11,6 +12,8 @@ interface MedicationLibraryProps {
 }
 
 export function MedicationLibrary({ medications: initial }: MedicationLibraryProps) {
+  const t = useTranslations("profile");
+  const tc = useTranslations("common");
   const [meds, setMeds] = useState(initial);
   const [showAdd, setShowAdd] = useState(false);
   const [name, setName] = useState("");
@@ -46,7 +49,7 @@ export function MedicationLibrary({ medications: initial }: MedicationLibraryPro
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Pill size={20} className="text-accent" />
-          <h2 className="text-base font-semibold">My Medications</h2>
+          <h2 className="text-base font-semibold">{t("myMedications")}</h2>
         </div>
         <button
           onClick={() => setShowAdd(!showAdd)}
@@ -61,7 +64,7 @@ export function MedicationLibrary({ medications: initial }: MedicationLibraryPro
         <div className="rounded-[var(--radius-md)] border border-border bg-bg-surface p-3 space-y-3">
           <input
             type="text"
-            placeholder="Medication name"
+            placeholder={t("medicationName")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full rounded-[var(--radius-sm)] bg-bg-elevated px-3 py-2 text-sm outline-none placeholder:text-text-secondary"
@@ -69,7 +72,7 @@ export function MedicationLibrary({ medications: initial }: MedicationLibraryPro
           />
           <input
             type="text"
-            placeholder="Default dose (e.g., 400mg)"
+            placeholder={t("defaultDose")}
             value={dose}
             onChange={(e) => setDose(e.target.value)}
             className="w-full rounded-[var(--radius-sm)] bg-bg-elevated px-3 py-2 text-sm outline-none placeholder:text-text-secondary"
@@ -81,7 +84,7 @@ export function MedicationLibrary({ medications: initial }: MedicationLibraryPro
               className="flex-1 rounded-full bg-accent text-sm font-medium text-white"
               size="sm"
             >
-              {isPending ? "Adding..." : "Add"}
+              {isPending ? tc("adding") : tc("add")}
             </Button>
             <Button
               onClick={() => { setShowAdd(false); setName(""); setDose(""); }}
@@ -89,7 +92,7 @@ export function MedicationLibrary({ medications: initial }: MedicationLibraryPro
               className="rounded-full text-sm"
               size="sm"
             >
-              Cancel
+              {tc("cancel")}
             </Button>
           </div>
         </div>
@@ -98,7 +101,7 @@ export function MedicationLibrary({ medications: initial }: MedicationLibraryPro
       {/* Medications list */}
       <div className="rounded-[var(--radius-md)] border border-border bg-bg-surface p-2">
         {meds.length === 0 ? (
-          <p className="px-3 py-4 text-center text-sm text-text-secondary">No medications added yet</p>
+          <p className="px-3 py-4 text-center text-sm text-text-secondary">{t("noMedsAddedYet")}</p>
         ) : (
           <div className="space-y-1">
             {meds.map((med) => (

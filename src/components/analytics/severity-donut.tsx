@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 interface SeverityDonutProps {
@@ -7,13 +8,15 @@ interface SeverityDonutProps {
 }
 
 export function SeverityDonut({ data }: SeverityDonutProps) {
+  const t = useTranslations("analytics");
+  const tc = useTranslations("common");
   const total = data.reduce((sum, d) => sum + d.value, 0);
 
   return (
     <div className="rounded-[var(--radius-md)] border border-border bg-bg-surface p-4">
-      <h3 className="mb-4 text-sm font-medium text-text-secondary">Severity Distribution</h3>
+      <h3 className="mb-4 text-sm font-medium text-text-secondary">{t("severityDistribution")}</h3>
       {total === 0 ? (
-        <p className="py-8 text-center text-sm text-text-secondary">No data yet</p>
+        <p className="py-8 text-center text-sm text-text-secondary">{tc("noDataYet")}</p>
       ) : (
         <div className="flex items-center gap-4">
           <ResponsiveContainer width={120} height={120}>
@@ -40,7 +43,7 @@ export function SeverityDonut({ data }: SeverityDonutProps) {
                 <span className="font-medium">{d.value}</span>
               </div>
             ))}
-            <p className="text-xs text-text-secondary">Total: {total}</p>
+            <p className="text-xs text-text-secondary">{t("total", { count: total })}</p>
           </div>
         </div>
       )}

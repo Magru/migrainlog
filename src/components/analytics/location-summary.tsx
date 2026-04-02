@@ -1,53 +1,30 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type { PainLocation } from "@/lib/types/database";
 
 interface LocationSummaryProps {
   data: { location: PainLocation; count: number; opacity: number }[];
 }
 
-/** Human-readable labels for pain locations */
-const locationLabels: Record<string, string> = {
-  crown: "Crown",
-  left_forehead: "L Forehead",
-  right_forehead: "R Forehead",
-  left_temple: "L Temple",
-  right_temple: "R Temple",
-  left_behind_eye: "L Eye",
-  right_behind_eye: "R Eye",
-  left_sinus: "L Sinus",
-  right_sinus: "R Sinus",
-  left_jaw: "L Jaw",
-  right_jaw: "R Jaw",
-  left_ear: "L Ear",
-  right_ear: "R Ear",
-  left_back_of_head: "L Back",
-  right_back_of_head: "R Back",
-  left_neck: "L Neck",
-  right_neck: "R Neck",
-  full_head: "Full Head",
-  /* legacy */
-  forehead: "Forehead",
-  behind_eyes: "Eyes",
-  back_of_head: "Back",
-  neck: "Neck",
-};
-
 export function LocationSummary({ data }: LocationSummaryProps) {
+  const t = useTranslations("analytics");
+  const tLoc = useTranslations("locations");
+  const tc = useTranslations("common");
   const sorted = [...data].sort((a, b) => b.count - a.count);
   const max = sorted[0]?.count ?? 1;
 
   return (
     <div className="rounded-[var(--radius-md)] border border-border bg-bg-surface p-4">
-      <h3 className="mb-3 text-sm font-medium text-text-secondary">Pain Locations</h3>
+      <h3 className="mb-3 text-sm font-medium text-text-secondary">{t("painLocations")}</h3>
       {sorted.length === 0 ? (
-        <p className="py-4 text-center text-sm text-text-secondary">No data yet</p>
+        <p className="py-4 text-center text-sm text-text-secondary">{tc("noDataYet")}</p>
       ) : (
         <div className="space-y-2">
           {sorted.slice(0, 5).map((item) => (
             <div key={item.location} className="flex items-center gap-2">
               <span className="w-16 shrink-0 text-[11px] text-text-secondary">
-                {locationLabels[item.location] ?? item.location}
+                {tLoc(item.location)}
               </span>
               <div className="relative h-4 flex-1 overflow-hidden rounded-full bg-bg-elevated">
                 <div

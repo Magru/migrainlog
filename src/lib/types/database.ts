@@ -38,6 +38,8 @@ export type SymptomType =
 
 export type Gender = "male" | "female";
 
+export type AppLocale = "en" | "ru";
+
 export type MenstrualPhase = "before" | "during" | "after" | "not_applicable";
 export type OvulationPhase = "before" | "during" | "after" | "not_applicable";
 
@@ -59,6 +61,7 @@ export type Database = {
           id: string;
           display_name: string | null;
           gender: Gender | null;
+          locale: AppLocale;
           is_admin: boolean;
           created_at: string;
         };
@@ -66,12 +69,14 @@ export type Database = {
           id: string;
           display_name?: string | null;
           gender?: Gender | null;
+          locale?: AppLocale;
           is_admin?: boolean;
           created_at?: string;
         };
         Update: {
           display_name?: string | null;
           gender?: Gender | null;
+          locale?: AppLocale;
           is_admin?: boolean;
         };
         Relationships: [];

@@ -1,17 +1,12 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { getSeverityLevel } from "@/lib/types/database";
 
 interface IntensitySliderProps {
   value: number;
   onChange: (value: number) => void;
 }
-
-const severityLabels = {
-  mild: "Mild",
-  moderate: "Moderate",
-  severe: "Severe",
-} as const;
 
 const severityColors = {
   mild: "var(--severity-low)",
@@ -20,6 +15,7 @@ const severityColors = {
 } as const;
 
 export function IntensitySlider({ value, onChange }: IntensitySliderProps) {
+  const tSeverity = useTranslations("severity");
   const severity = getSeverityLevel(value);
 
   return (
@@ -36,7 +32,7 @@ export function IntensitySlider({ value, onChange }: IntensitySliderProps) {
           className="mt-1 text-lg font-medium"
           style={{ color: severityColors[severity] }}
         >
-          {severityLabels[severity]}
+          {tSeverity(severity)}
         </p>
       </div>
 
@@ -49,7 +45,7 @@ export function IntensitySlider({ value, onChange }: IntensitySliderProps) {
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
           className="intensity-slider w-full"
-          aria-label={`Pain intensity: ${value} out of 10, ${severityLabels[severity]}`}
+          aria-label={`Pain intensity: ${value} out of 10, ${tSeverity(severity)}`}
         />
         <div className="mt-2 flex justify-between text-xs text-text-secondary">
           <span>1</span>

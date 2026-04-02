@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { Activity, TrendingUp, Zap } from "lucide-react";
 
 interface StatsRowProps {
@@ -6,22 +9,14 @@ interface StatsRowProps {
   topTrigger: string | null;
 }
 
-const triggerLabels: Record<string, string> = {
-  stress: "Stress",
-  sleep: "Sleep",
-  food: "Food",
-  weather: "Weather",
-  hormones: "Hormones",
-  screen: "Screen",
-  alcohol: "Alcohol",
-  caffeine: "Caffeine",
-};
-
 export function StatsRow({ totalEpisodes, avgIntensity, topTrigger }: StatsRowProps) {
+  const t = useTranslations("dashboard");
+  const tTriggers = useTranslations("triggers");
+
   const stats = [
-    { icon: Activity, label: "Episodes", value: totalEpisodes.toString(), color: "text-accent" },
-    { icon: TrendingUp, label: "Avg Intensity", value: avgIntensity > 0 ? avgIntensity.toFixed(1) : "—", color: "text-severity-mid" },
-    { icon: Zap, label: "Top Trigger", value: topTrigger ? triggerLabels[topTrigger] ?? topTrigger : "—", color: "text-accent-secondary" },
+    { icon: Activity, label: t("episodes"), value: totalEpisodes.toString(), color: "text-accent" },
+    { icon: TrendingUp, label: t("avgIntensity"), value: avgIntensity > 0 ? avgIntensity.toFixed(1) : "—", color: "text-severity-mid" },
+    { icon: Zap, label: t("topTrigger"), value: topTrigger ? tTriggers(topTrigger) : "—", color: "text-accent-secondary" },
   ];
 
   return (

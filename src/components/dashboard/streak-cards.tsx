@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { Shield, Trophy } from "lucide-react";
 
 interface StreakCardsProps {
@@ -6,6 +9,8 @@ interface StreakCardsProps {
 }
 
 export function StreakCards({ daysSinceLast, longestStreak }: StreakCardsProps) {
+  const t = useTranslations("dashboard");
+
   return (
     <div className="grid grid-cols-2 gap-3">
       {/* Days since last episode */}
@@ -15,7 +20,7 @@ export function StreakCards({ daysSinceLast, longestStreak }: StreakCardsProps) 
           {daysSinceLast}
         </span>
         <span className="text-center text-[11px] text-text-secondary">
-          {daysSinceLast === 1 ? "day" : "days"} since last episode
+          {t("daysSinceLastEpisode", { count: daysSinceLast })}
         </span>
       </div>
 
@@ -26,7 +31,7 @@ export function StreakCards({ daysSinceLast, longestStreak }: StreakCardsProps) 
           {longestStreak}
         </span>
         <span className="text-center text-[11px] text-text-secondary">
-          {longestStreak === 1 ? "day" : "days"} best streak
+          {t("daysBestStreak", { count: longestStreak })}
         </span>
       </div>
     </div>

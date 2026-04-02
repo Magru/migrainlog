@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { PageTransition } from "@/components/layout/page-transition";
 import { MonthSelector } from "@/components/calendar/month-selector";
 import { CalendarHeatmap } from "@/components/calendar/calendar-heatmap";
@@ -9,6 +10,7 @@ import { toLocalDateStr } from "@/lib/utils/date-helpers";
 import type { EpisodeWithDetails } from "@/lib/types/episode";
 
 export default function CalendarPage() {
+  const t = useTranslations("calendar");
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
@@ -52,7 +54,7 @@ export default function CalendarPage() {
   return (
     <PageTransition>
       <div className="space-y-6 py-6">
-        <h1 className="font-heading text-[28px] font-extrabold">Calendar</h1>
+        <h1 className="font-heading text-[28px] font-extrabold">{t("title")}</h1>
         <MonthSelector year={year} month={month} onPrev={goPrev} onNext={goNext} disableNext={isCurrentMonth} />
         <CalendarHeatmap
           year={year}
