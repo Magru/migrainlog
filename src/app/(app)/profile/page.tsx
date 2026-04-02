@@ -28,6 +28,7 @@ export default async function ProfilePage() {
           displayName={profile?.display_name ?? null}
           email={user?.email ?? ""}
           createdAt={profile?.created_at ?? new Date().toISOString()}
+          gender={profile?.gender ?? null}
         />
 
         <MedicationLibrary medications={medications} />

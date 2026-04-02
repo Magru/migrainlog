@@ -36,6 +36,8 @@ export type SymptomType =
   | "light_sensitivity"
   | "sound_sensitivity";
 
+export type Gender = "male" | "female";
+
 export type MedicationEffectiveness = "none" | "partial" | "full";
 
 export type SeverityLevel = "mild" | "moderate" | "severe";
@@ -53,17 +55,20 @@ export type Database = {
         Row: {
           id: string;
           display_name: string | null;
+          gender: Gender | null;
           is_admin: boolean;
           created_at: string;
         };
         Insert: {
           id: string;
           display_name?: string | null;
+          gender?: Gender | null;
           is_admin?: boolean;
           created_at?: string;
         };
         Update: {
           display_name?: string | null;
+          gender?: Gender | null;
           is_admin?: boolean;
         };
         Relationships: [];
