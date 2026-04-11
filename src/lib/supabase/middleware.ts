@@ -33,9 +33,12 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getSession();
 
   const isAuthPage = request.nextUrl.pathname.startsWith("/login");
+  const isPublicPage =
+    request.nextUrl.pathname.startsWith("/privacy") ||
+    request.nextUrl.pathname.startsWith("/support");
 
-  // Redirect unauthenticated users to login (except auth pages)
-  if (!session && !isAuthPage) {
+  // Redirect unauthenticated users to login (except auth and public pages)
+  if (!session && !isAuthPage && !isPublicPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
